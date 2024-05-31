@@ -1,18 +1,35 @@
 import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
+import { generateObject } from 'ai';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+import { getRandomTopic } from '../..//lib/topic';
+import { getRandomStyle } from '../..//lib/style';
 
 export const dynamic = 'force';
 
-export async function POST(req: Request) {
-  const { topic, style } = await req.json();
+export async function GET() {
+  const topic: string = getRandomTopic();
+  const style = getRandomStyle();
 
-  const prompt = `Write a poem about ${topic} in ${style}.`;
+  const prompt = `Write a poem about ${topic} in ${style.description}.`;
 
-  const result = await generateText({
+  const result = await generateObject({
     model: openai('gpt-4o'),
     prompt,
+    schema: z.object({
+      title: z.string(),
+      lines: z.array(z.string()).length(5),
+    })
   });
 
-  return NextResponse.json({text: result.text, newPoemIn: 3600});
+  const { title, lines } = result.object;
+
+  const returnValue = {
+    title,
+    lines,
+    style: style.name,
+  };
+
+  return NextResponse.json(returnValue);
 }
