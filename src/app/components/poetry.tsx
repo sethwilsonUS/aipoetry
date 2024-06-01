@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { kv } from '@vercel/kv';
 import getRandomPoem from '../lib/getRandomPoem';
 
@@ -9,6 +10,8 @@ interface IPoetry {
 }
 
 const Poetry = async () => {
+  revalidatePath('/');
+
   const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
 
   let poetryRes: IPoetry | null = await kv.get('newPoem');
