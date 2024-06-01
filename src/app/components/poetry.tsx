@@ -9,6 +9,8 @@ const Poetry = async () => {
   const env = process.env.NODE_ENV;
   const noCache = process.env.NO_CACHE === 'true';
 
+  console.log(`NODE_ENV: ${env}`);
+
   let poetryRes: IPoetry | null = null;
 
   if (noCache) {
