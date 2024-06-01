@@ -5,13 +5,7 @@ import { z } from 'zod';
 
 import { getRandomTopic } from './topic';
 import { getRandomStyle } from './style';
-
-interface IPoetry {
-  title: string;
-  lines: string[];
-  styleName: string;
-  styleExplanation: string;
-}
+import IPoetry from '@/types/poetry';
 
 const getRandomPoem = async (): Promise<IPoetry> => {
   const topic: string = getRandomTopic();
