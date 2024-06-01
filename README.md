@@ -22,7 +22,7 @@ git clone https://github.com/sethwilsonUS/aipoetry.git
 
 cd into the development directory and run `yarn` to install dependencies.
 
-Rename `env.example` to `env.local`. It should look something like this:
+Rename `.env.example` to `.env.local`. It should look something like this:
 
 ```
 OPENAI_API_KEY=sk-proj-xxxxxxxx
