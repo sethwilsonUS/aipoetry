@@ -6,13 +6,21 @@ import IPoetry from '@/types/poetry';
 const Poetry = async () => {
   revalidatePath('/');
 
-  const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
+  const env = process.env.NODE_ENV;
+  const noCache = process.env.NO_CACHE === 'true';
 
-  let poetryRes: IPoetry | null = await kv.get('newPoem');
+  let poetryRes: IPoetry | null = null;
 
-  if (!poetryRes) {
+  if (noCache) {
     poetryRes = await getRandomPoem();
-    await kv.set('newPoem', poetryRes, { ex: revalidate });
+  } else {
+    poetryRes = await kv.get(`${env}NewPoem`);
+
+    if (!poetryRes) {
+      const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
+      poetryRes = await getRandomPoem();
+      await kv.set(`${env}NewPoem`, poetryRes, { ex: revalidate });
+    }
   }
   
   const { title, lines, styleName, styleExplanation } = poetryRes;

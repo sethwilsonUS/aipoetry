@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to AI Poetry
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This is a barebones web app with one purpose: to share one new AI-generated poem each hour. The poems are generated from a wide variety of topics and an array of poetic styles. It's my hope this app will provide some amusement, whether it be from appreciating a great verse or turn of phrase, or, more often than not, having a good laugh at AI's limits of versification. Moreover, I hope readers will come away with a deepened appreciation for the diversity of poetic forms.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Note this is a work in progress. The app will likely always remain lightweight and stay true to this original purpose, but there are numerous improvements I'd like to make.
+
+That's where you come in! This project is open-source, so you're more than welcome to contribute!
+
+## Development
+
+If you want to work on the app, you'll need your own OpenAI API key (or feel free to play around with other models if you'd like, up to you). You can set this up at [https://platform.openai.com](https://platform.openai.com).
+
+### Quickstart
+
+Clone this repository
+
+```
+git clone https://github.com/sethwilsonUS/aipoetry.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+cd into the development directory and run `yarn` to install dependencies.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Rename `env.example` to `env.local`. It should look something like this:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+OPENAI_API_KEY=sk-proj-xxxxxxxx
+NO_CACHE=true
+```
 
-## Learn More
+The `OPENAI_API_KEY` field is where you'll place your API key that you got from OpenAI's platform page. Note that this means you will be charged each time the app fgenerates a random poem. The amount may seem small but it can add up quickly if you're not careful.
 
-To learn more about Next.js, take a look at the following resources:
+The `NO_CACHE` field lets you develop on the app without connecting to the KV Redis cache I use for the actual app. But to my above point, realize that in this mode the app will generate a new poem on every refresh.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Of course, you're welcome to create a Vercel account and set up your own KV store of your own if you want to test out that functionality.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Finally, start the app by running `yarn dev`. You can now connect to it by opening a browser and browsing to `http://localhost:3000`.
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Please feel free to open a Pull Request if you want to contribute a feature, or just some potential poem topics/styles. Topics are easy to contribute and just involve adding them to the relevant string array. Styles are a bit more involved; I will write up a guide on those later.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Thanks!
