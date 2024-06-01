@@ -15,8 +15,7 @@ const Poetry = async () => {
 
   if (!poetryRes) {
     poetryRes = await getRandomPoem();
-    await kv.set('newPoem', poetryRes);
-    await kv.expire('newPoem', revalidate);
+    await kv.set('newPoem', poetryRes, { ex: revalidate });
   }
   
   const { title, lines, styleName, styleExplanation } = poetryRes;
