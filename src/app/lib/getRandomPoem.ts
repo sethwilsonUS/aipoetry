@@ -3,12 +3,16 @@ import { generateObject } from 'ai';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getRandomTopic } from '../..//lib/topic';
-import { getRandomStyle } from '../..//lib/style';
+import { getRandomTopic } from './topic';
+import { getRandomStyle } from './style';
 
-export const dynamic = 'force';
+interface IPoetry {
+  title: string;
+  lines: string[];
+  style: string;
+}
 
-export async function GET() {
+const getRandomPoem = async (): Promise<IPoetry> => {
   const topic: string = getRandomTopic();
   const style = getRandomStyle();
 
@@ -28,5 +32,7 @@ export async function GET() {
     style: style.name,
   };
 
-  return NextResponse.json(returnValue);
+  return returnValue;
 }
+
+export default getRandomPoem;
