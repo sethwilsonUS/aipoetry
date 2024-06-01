@@ -1,4 +1,4 @@
-import kv from '@vercel/kv';
+import { kv } from '@vercel/kv';
 import getRandomPoem from '../lib/getRandomPoem';
 
 interface IPoetry {
@@ -8,17 +8,16 @@ interface IPoetry {
 }
 
 const Poetry = async () => {
-  const revalidate = parseInt(process.env.REVALIDATE || '0', 10);
+  const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
 
-  const poetryRes = await kv.get('newPoem');
+  let poetryRes: IPoetry | null = await kv.get('newPoem');
 
   if (!poetryRes) {
-    await kv.set('newPoem', getRandomPoem());
-    await kv.expire('newPoem', revalidate);
+    poetryRes = await getRandomPoem();
+    await kv.set('newPoem', poetryRes, { ex: revalidate });
   }
   
-  const res = await poetryRes.json();
-  const { title, lines, style }: IPoetry = res;
+  const { title, lines, style } = poetryRes;
 
   return (
     <div>

@@ -32,6 +32,7 @@ const getRandomPoem = async (): Promise<IPoetry> => {
     style: style.name,
   };
 
+
   return returnValue;
 }
 
