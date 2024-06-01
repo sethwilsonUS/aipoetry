@@ -17,10 +17,7 @@ export async function GET() {
   const result = await generateObject({
     model: openai('gpt-4o'),
     prompt,
-    schema: z.object({
-      title: z.string(),
-      lines: z.array(z.string()).length(5),
-    })
+    schema: style.format,
   });
 
   const { title, lines } = result.object;

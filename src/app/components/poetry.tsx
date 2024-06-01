@@ -5,9 +5,12 @@ interface IPoetry {
 }
 
 const Poetry = async () => {
+  const revalidate = parseInt(process.env.REVALIDATE || '0', 10);
 
   const poetryRes = await fetch('http://localhost:3000/api/poetry', {
-    cache: 'no-store',
+    next: {
+      revalidate
+    }
   });
   
   const res = await poetryRes.json();
