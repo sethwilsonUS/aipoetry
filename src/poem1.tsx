@@ -3,6 +3,8 @@
  * @see https://v0.dev/t/xefQ2pTsW7P
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+
+/**
 export default function Component() {
   return (
     <div className="px-4 py-6 md:px-6 md:py-12 lg:py-16 bg-white dark:bg-gray-950">
@@ -46,3 +48,4 @@ export default function Component() {
     </div>
   )
 }
+**/

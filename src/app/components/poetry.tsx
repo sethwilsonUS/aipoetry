@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { kv } from '@vercel/kv';
-import getRandomPoem from '../lib/getRandomPoem';
+import getRandomPoem from '../../lib/getRandomPoem';
 import IPoetry from '@/types/poetry';
 
 const Poetry = async () => {
