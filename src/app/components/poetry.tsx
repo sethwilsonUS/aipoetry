@@ -4,7 +4,8 @@ import getRandomPoem from '../lib/getRandomPoem';
 interface IPoetry {
     title: string;
     lines: string[];
-    style: string;
+    styleName: string;
+    styleExplanation: string;
 }
 
 const Poetry = async () => {
@@ -14,21 +15,24 @@ const Poetry = async () => {
 
   if (!poetryRes) {
     poetryRes = await getRandomPoem();
-    await kv.set('newPoem', poetryRes, { ex: revalidate });
+    await kv.set('newPoem', poetryRes);
+    await kv.expire('newPoem', revalidate);
   }
   
-  const { title, lines, style } = poetryRes;
+  const { title, lines, styleName, styleExplanation } = poetryRes;
 
   return (
     <div>
-      <h1>Poetry</h1>
-      <p>Style: {style}</p>
       <h2>{title}</h2>
+      <br />
       <div>
         {lines.map((line, index) => (
           <p key={index}>{line}</p>
         ))}
       </div>
+      <br />
+      <p>Style: {styleName}</p>
+      <p>{styleExplanation}</p>
     </div>
   );
 }
