@@ -19,6 +19,30 @@ const styles = [
     explanation: 'A haiku is a three-line poem with a strict syllable count (5-7-5). Haikus often focus on nature and the changing seasons, and are intended to evoke a sense of wonder and contemplation.',
     lines: 3,
   },
+  {
+    name: 'alliterative verse',
+    description: '10 lines of alliterative verse in the style of Old English poetry',
+    explanation: 'Alliterative verse is a form of poetry that relies on the repetition of initial consonant sounds to create rhythm and structure. This style was popular in Old English and Middle English poetry, and is often associated with epic narratives and heroic themes.',
+    lines: 10,
+  },
+  {
+    name: 'terza rima',
+    description: '9 lines (three stanzas)  terza rima poetry in the style of Dante',
+    explanation: 'Terza rima is a form of poetry that uses a three-line stanza with a rhyme scheme (ABA BCB CDC). This style was popularized by the Italian poet Dante Alighieri in his Divine Comedy, and is often used to explore themes of sin, redemption, and the afterlife.',
+    lines: 9,
+  },
+  {
+    'name': 'blank verse',
+    'description': 'a 10-line poem in blank verse in the style of Milton\'s Paradise Lost',
+    'explanation': 'Blank verse is a form of poetry that uses unrhymed lines of iambic pentameter. This style was popularized by the English poet John Milton in his epic poem Paradise Lost, and is often used to explore complex themes and ideas.',
+    'lines': 10,
+  },
+  {
+    'name': 'iambic pentameter couplets',
+    'description': '10 lines of iambic pentameter in couplets in the style of Chaucer and the Canterbury Tales prologue',
+    'explanation': 'Iambic pentameter is a form of poetry that uses lines of five iambs (unstressed/stressed syllable pairs). This style is often used in English poetry and drama, and is associated with the works of William Shakespeare and other Renaissance writers.',
+    'lines': 10,  
+  },
 ]
 
 export const getRandomStyle = () => {

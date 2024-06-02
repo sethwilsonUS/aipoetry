@@ -23,6 +23,7 @@ const getRandomPoem = async (): Promise<IPoetry> => {
     prompt,
     schema,
     maxRetries: 3,
+    temperature: 0.8,
   });
 
   const { title, lines, } = result.object;
