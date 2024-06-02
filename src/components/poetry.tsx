@@ -8,7 +8,7 @@ const Poetry: React.FC<IPoetryComponentProps> = (props) => {
     <div className="w-full p-12 bg-white dark:bg-gray-950">
       <article className="prose prose-gray max-w-3xl mx-auto dark:prose-invert">
         <div className="flex items-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">{props.title}</h1>
+          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl pr-2">{props.title}</h1>
           <Popover>
             <PopoverTrigger asChild>
               <Button className="rounded-full" size="icon" variant="ghost">
