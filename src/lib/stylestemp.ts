@@ -1,3 +1,5 @@
+// other potential styles to add
+
 const style = [
   {
     name: 'ode',
@@ -105,6 +107,6 @@ const style = [
   },
   {
     name: 'sapphic',
-    description: 'a sapphic ode--i.e. in the style of Sappho'
+    description: 'a sapphic ode--i.e. in the style of Sappho of Lesbos'
   }
 ];
