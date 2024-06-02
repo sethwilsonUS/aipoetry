@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { getRandomTopic } from './topic';
 import { getRandomStyle } from './style';
-import IPoetry from '@/types/poetry';
+import { IPoetry } from '@/types/poetry';
 
 const getRandomPoem = async (): Promise<IPoetry> => {
   const topic: string = getRandomTopic();
