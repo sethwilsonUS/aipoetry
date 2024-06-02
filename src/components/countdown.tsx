@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react";
-import moment from "moment";
-import { clear } from "console";
+import { useState, useEffect, } from 'react';
+import moment from 'moment';
+import { clear, } from 'console';
 
 const Countdown: React.FC<{ttl: number}> = (props) =>{
   const nextPoemTime = Date.now() + props.ttl * 1000;
@@ -10,7 +10,7 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
     return Date.now() >= nextPoemTime;
   }
 
-  const [promptRefresh, setPromptRefresh] = useState(false);
+  const [promptRefresh, setPromptRefresh,] = useState(false);
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,14 +20,14 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  });
 
   return (
     <div className="w-full flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2 text-gray-900 dark:bg-gray-800 dark:text-gray-50">
       {!promptRefresh ? (
         <>
           <ClockIcon className="h-5 w-5" />
-          <span>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format("h:mm A")}</span>
+          <span>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}</span>
         </>
       ) : (
         <>

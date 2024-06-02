@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
-import { PopoverTrigger, PopoverContent, Popover } from "@/components/ui/popover"
-import { IPoetryComponentProps } from "@/types/poetry"
+import { Button, } from '@/components/ui/button'
+import { PopoverTrigger, PopoverContent, Popover, } from '@/components/ui/popover'
+import { IPoetryComponentProps, } from '@/types/poetry'
 
 const Poetry: React.FC<IPoetryComponentProps> = (props) => {
-  const { title, lines, styleName, styleExplanation, ttl } = props;
+  const { title, lines, styleName, styleExplanation, ttl, } = props;
   console.log(`ttl in poetry: ${ttl}`)
   return (
     <div className="w-full p-12 bg-white dark:bg-gray-950">
