@@ -41,4 +41,13 @@ Finally, start the app by running `yarn dev`. You can now connect to it by openi
 
 Please feel free to open a Pull Request if you want to contribute a feature, or just some potential poem topics/styles. Topics are easy to contribute and just involve adding them to the relevant string array. Styles are a bit more involved; I will write up a guide on those later.
 
+### Topics
+
+Here are some common-sense guidelines for submitting topics:
+
+- no offensive topics
+- no topics that discriminate by race, sex, ethnicity, or other demographic
+- no political or religious topics
+- I reserve the right to reject topics for other reasons not listed
+
 Thanks!
