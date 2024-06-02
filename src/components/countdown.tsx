@@ -2,28 +2,32 @@
 
 import { useState, useEffect } from "react";
 import moment from "moment";
+import { clear } from "console";
 
 const Countdown: React.FC<{ttl: number}> = (props) =>{
-  const [timeRemaining, setTimeRemaining] = useState(props.ttl)
+  const nextPoemTime = Date.now() + props.ttl * 1000;
+  const readyForNextPoem = () => {
+    return Date.now() >= nextPoemTime;
+  }
+
+  const [promptRefresh, setPromptRefresh] = useState(false);
+  
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining((prevTime) => {
-        if (prevTime === 0) {
-          clearInterval(interval)
-          return 0
-        }
-        return prevTime - 1
-      })
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [props.ttl])
+      if (Date.now() >= nextPoemTime) {
+        setPromptRefresh(true);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="w-full flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2 text-gray-900 dark:bg-gray-800 dark:text-gray-50">
-      {timeRemaining > 0 ? (
+      {!promptRefresh ? (
         <>
           <ClockIcon className="h-5 w-5" />
-          <span>{moment.utc(timeRemaining * 1000).format("mm:ss")}</span>
-          <span>until next poem</span>
+          <span>Next poem at {moment(nextPoemTime).format("h:mm A")}</span>
         </>
       ) : (
         <>
