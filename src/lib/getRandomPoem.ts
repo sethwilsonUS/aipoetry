@@ -16,6 +16,7 @@ const getRandomPoem = async (): Promise<IPoetry> => {
 
   const prompt = `Write a poem about ${topic} in ${style.description}. Also give the poem a title.
                   Make sure the title is also poetic and relevant to the poem.
+                  Also, please, no blank lines between stanzas.
   `;
 
   const result = await generateObject({
