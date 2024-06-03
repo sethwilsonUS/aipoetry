@@ -1,33 +1,33 @@
 'use client'
 
-import { useState, useEffect, } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
-import { clear, } from 'console';
+import { clear } from 'console';
 
-const Countdown: React.FC<{ttl: number}> = (props) =>{
+const Countdown: React.FC<{ttl: number}> = (props,) =>{
   const nextPoemTime = Date.now() + props.ttl * 1000;
   const readyForNextPoem = () => {
     return Date.now() >= nextPoemTime;
   }
 
-  const [promptRefresh, setPromptRefresh,] = useState(false);
+  const [promptRefresh, setPromptRefresh,] = useState(false,);
   
   useEffect(() => {
     const interval = setInterval(() => {
       if (Date.now() >= nextPoemTime) {
-        setPromptRefresh(true);
-        clearInterval(interval);
+        setPromptRefresh(true,);
+        clearInterval(interval,);
       }
-    }, 1000);
-    return () => clearInterval(interval);
-  });
+    }, 1000,);
+    return () => clearInterval(interval,);
+  },);
 
   return (
     <div className="w-full flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2 text-gray-900 dark:bg-gray-800 dark:text-gray-50">
       {!promptRefresh ? (
         <>
           <ClockIcon className="h-5 w-5" />
-          <span>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}</span>
+          <span>Next poem at {moment(nextPoemTime,).startOf('minute',).add(1, 'minute',).format('h:mm A',)}</span>
         </>
       ) : (
         <>
@@ -39,7 +39,7 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
   )
 }
 
-function ClockIcon(props: any) {
+function ClockIcon(props: any,) {
   return (
     <svg
       {...props}
@@ -59,7 +59,7 @@ function ClockIcon(props: any) {
   )
 }
 
-function BookOpenIcon(props: any) {
+function BookOpenIcon(props: any,) {
   return (
     <svg
       {...props}

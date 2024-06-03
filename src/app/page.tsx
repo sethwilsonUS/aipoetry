@@ -1,18 +1,18 @@
-import { revalidatePath, } from 'next/cache';
-import { kv, } from '@vercel/kv';
+import { revalidatePath } from 'next/cache';
+import { kv } from '@vercel/kv';
 import getRandomPoem from '@/lib/getRandomPoem';
-import { IPoetry, } from '@/types/poetry';
+import { IPoetry } from '@/types/poetry';
 
 import Poetry from '../components/poetry';
 import Countdown from '../components/countdown';
 
 export default async function Home() {
-  revalidatePath('/');
+  revalidatePath('/',);
 
   const env = process.env.NODE_ENV;
   const noCache = process.env.NO_CACHE === 'true';
 
-  console.log(`NODE_ENV: ${env}`);
+  console.log(`NODE_ENV: ${env}`,);
 
   let poetryRes: IPoetry | null = null;
   let ttl = 0;
@@ -20,15 +20,15 @@ export default async function Home() {
   if (noCache) {
     poetryRes = await getRandomPoem();
   } else {
-    poetryRes = await kv.get(`${env}NewPoem`);
+    poetryRes = await kv.get(`${env}NewPoem`,);
 
     if (!poetryRes) {
-      const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
+      const revalidate = parseInt(process.env.REVALIDATE || '3600', 10,);
       poetryRes = await getRandomPoem();
-      await kv.set(`${env}NewPoem`, poetryRes, { ex: revalidate, });
+      await kv.set(`${env}NewPoem`, poetryRes, { ex: revalidate, },);
     }
 
-    ttl = await kv.ttl(`${env}NewPoem`);
+    ttl = await kv.ttl(`${env}NewPoem`,);
   }
 
   const { title, lines, styleName, styleExplanation, } = poetryRes;

@@ -1,4 +1,4 @@
-import { z, } from 'zod';
+import { z } from 'zod';
 
 const styles = [
   {
@@ -46,6 +46,6 @@ const styles = [
 ]
 
 export const getRandomStyle = () => {
-  const randomIndex = Math.floor(Math.random() * styles.length);
+  const randomIndex = Math.floor(Math.random() * styles.length,);
   return styles[randomIndex];
 };

@@ -2,6 +2,12 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "quotes": ["error", "single"],
-    "comma-dangle": ["error", "always"]
-  }
+    "comma-dangle": ["error", {
+      "arrays": "always",
+      "objects": "always",
+      "imports": "only-multiline",
+      "exports": "always",
+      "functions": "always"
+  }]
+}
 }
