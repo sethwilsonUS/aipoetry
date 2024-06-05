@@ -1,10 +1,12 @@
 import { revalidatePath } from 'next/cache';
 import { kv } from '@vercel/kv';
+import dynamic from 'next/dynamic'
 import getRandomPoem from '@/lib/getRandomPoem';
 import { IPoetry } from '@/types/poetry';
 
 import Poetry from '../components/poetry';
-import Countdown from '../components/countdown';
+
+const Countdown = dynamic(() => import('../components/countdown'), { ssr: false,},);
 
 export default async function Home() {
   revalidatePath('/',);
