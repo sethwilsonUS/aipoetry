@@ -3,11 +3,11 @@
   "rules": {
     "quotes": ["error", "single"],
     "comma-dangle": ["error", {
-      "arrays": "always",
-      "objects": "always",
+      "arrays": "only-multiline",
+      "objects": "only-multiline",
       "imports": "only-multiline",
-      "exports": "always",
-      "functions": "always"
+      "exports": "only-multiline",
+      "functions": "only-multiline"
   }]
 }
 }

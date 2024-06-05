@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button'
 import { PopoverTrigger, PopoverContent, Popover } from '@/components/ui/popover'
 import { IPoetryComponentProps } from '@/types/poetry'
 
-const Poetry: React.FC<IPoetryComponentProps> = (props,) => {
-  const { title, lines, styleName, styleExplanation, ttl, } = props;
-  console.log(`ttl in poetry: ${ttl}`,)
+const Poetry: React.FC<IPoetryComponentProps> = (props) => {
+  const { title, lines, styleName, styleExplanation, ttl } = props;
+  console.log(`ttl in poetry: ${ttl}`)
   return (
     <div className="w-full p-12 bg-white dark:bg-gray-950">
       <article className="prose prose-gray max-w-3xl mx-auto dark:prose-invert">
@@ -30,16 +30,16 @@ const Poetry: React.FC<IPoetryComponentProps> = (props,) => {
         </div>
         <br />
         <div className="space-y-4">
-          {lines.map((line, index,) => (
+          {lines.map((line, index) => (
             <p key={index}>{line}</p>
-          ),)}
+          ))}
         </div>
       </article>
     </div>
   )
 }
 
-function InfoIcon(props: any,) {
+function InfoIcon(props: any) {
   return (
     <svg
       {...props}
