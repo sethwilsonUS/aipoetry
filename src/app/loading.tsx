@@ -3,11 +3,11 @@ import { Skeleton } from '../components/ui/skeleton';
 const Loading = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
-      <div className="flex flex-col z-10 w-full max-w-5xl items-center justify-between lg:flex">
-        <div className="w-full p-12 bg-white dark:bg-gray-950">
+      <div className="flex flex-col z-10 w-full max-w-4xl items-center justify-between lg:flex">
+        <div className="w-full p-4 lg:p-12 bg-white dark:bg-gray-900">
           <article className="prose prose-gray max-w-3xl mx-auto dark:prose-invert">
             <div>
-              <Skeleton className='h-12 w-[400px] mb-2' />
+              <Skeleton className='h-12 w-[270px] lg:w-[400px] mb-2' />
               <div className='space-y-4 pt-6'>
                 <Skeleton className='h-4 w-[250px]' />
                 <Skeleton className='h-4 w-[180px]' />
