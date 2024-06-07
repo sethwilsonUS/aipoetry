@@ -11,7 +11,12 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
   }
 
   const [promptRefresh, setPromptRefresh] = useState(false);
-  
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (Date.now() >= nextPoemTime) {
@@ -24,10 +29,12 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
 
   return (
     <div className="w-full flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2 text-gray-900 dark:bg-gray-800 dark:text-gray-50">
-      {!promptRefresh ? (
+      {(!promptRefresh && isClient) ? (
         <>
           <ClockIcon className="h-5 w-5" />
-          <span suppressHydrationWarning>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}</span>
+          <span>
+            Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}
+          </span>
         </>
       ) : (
         <>
