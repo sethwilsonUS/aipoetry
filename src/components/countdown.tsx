@@ -27,7 +27,7 @@ const Countdown: React.FC<{ttl: number}> = (props) =>{
       {!promptRefresh ? (
         <>
           <ClockIcon className="h-5 w-5" />
-          <span>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}</span>
+          <span suppressHydrationWarning>Next poem at {moment(nextPoemTime).startOf('minute').add(1, 'minute').format('h:mm A')}</span>
         </>
       ) : (
         <>
