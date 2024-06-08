@@ -2,7 +2,6 @@ const topics = [
     'cows',
     'crosswords',
     'nerds',
-    'rae_cat',
     'Rush (the band)',
     'poetry',
     'Wordle',
@@ -22,6 +21,14 @@ const topics = [
     'rock opera',
     'corn hole',
     'raspberries',
+    'pumpkins',
+    'cauliflower',
+    'oreo cookies',
+    'wild horses',
+    'waffles',
+    'the game of crickt',
+    'Oxford commas',
+    'Oxford University',
 ]
 
 export const getRandomTopic = () => {

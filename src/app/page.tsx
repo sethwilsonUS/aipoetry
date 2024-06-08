@@ -27,6 +27,7 @@ export default async function Home() {
 
     if (!poetryRes) {
       const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
+      console.log(`Revalidating in ${revalidate} seconds`);
       poetryRes = await getRandomPoem();
       await kv.set(`${env}NewPoem`, poetryRes, { ex: revalidate });
     }
