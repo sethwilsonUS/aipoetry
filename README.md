@@ -41,6 +41,8 @@ Finally, start the app by running `yarn dev`. You can now connect to it by openi
 
 Please feel free to open a Pull Request if you want to contribute a feature, or just some potential poem topics/styles. Topics are easy to contribute and just involve adding them to the relevant string array. Styles are a bit more involved; I will write up a guide on those later.
 
+All pull requests should be made against the `next` branch. This is the preview branch. Once a change has been approved and merged, it will then be merged into `main` and thus the deployed app. But do not make PRs against `main` directly--they will be summarily closed.
+
 ### Topics
 
 Here are some common-sense guidelines for submitting topics:
