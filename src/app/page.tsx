@@ -12,7 +12,7 @@ import Countdown from '../components/countdown';
 export default async function Home() {
   revalidatePath('/');
 
-  const envType = process.env.ENV_TYPE || 'env';
+  const envType = process.env.ENV_TYPE || 'dev';
   const noCache = process.env.NO_CACHE === 'true';
 
   let poetryRes: IPoetry | null = null;
