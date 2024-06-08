@@ -35,7 +35,7 @@ export default async function Home() {
   const { title, lines, styleName, styleExplanation } = poetryRes;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12">
+    <main className="flex flex-col items-center justify-between p-12">
       <div className="flex flex-col z-10 w-full max-w-4xl justify-between lg:flex">
         <Poetry
           title={title}
