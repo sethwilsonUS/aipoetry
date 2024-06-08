@@ -17,7 +17,7 @@ export default function Navbar() {
         >
           About
         </Link>
-        <Link href='https://github.com/sethwilsonUS' target='_blank' prefetch={false}>
+        <Link href='https://github.com/sethwilsonUS/aipoetry' target='_blank' prefetch={false}>
           <GithubIcon className='h-6 w-6 text-white' />
           <span className='sr-only'>GitHub</span>
         </Link>
