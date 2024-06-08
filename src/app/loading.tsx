@@ -2,7 +2,7 @@ import { Skeleton } from '../components/ui/skeleton';
 
 const Loading = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12">
+    <main className="flex flex-col items-center justify-between p-12">
       <div className="flex flex-col z-10 w-full max-w-4xl items-center justify-between lg:flex">
         <div className="w-full p-4 lg:p-12 bg-white dark:bg-gray-900">
           <article className="prose prose-gray max-w-3xl mx-auto dark:prose-invert">
