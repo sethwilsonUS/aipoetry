@@ -12,10 +12,8 @@ import Countdown from '../components/countdown';
 export default async function Home() {
   revalidatePath('/');
 
-  const env = process.env.NODE_ENV;
+  const envType = process.env.ENV_TYPE || 'prod';
   const noCache = process.env.NO_CACHE === 'true';
-
-  console.log(`NODE_ENV: ${env}`);
 
   let poetryRes: IPoetry | null = null;
   let ttl = 0;
@@ -23,16 +21,15 @@ export default async function Home() {
   if (noCache) {
     poetryRes = await getRandomPoem();
   } else {
-    poetryRes = await kv.get(`${env}NewPoem`);
+    poetryRes = await kv.get(`${envType}NewPoem`);
 
     if (!poetryRes) {
       const revalidate = parseInt(process.env.REVALIDATE || '3600', 10);
-      console.log(`Revalidating in ${revalidate} seconds`);
       poetryRes = await getRandomPoem();
-      await kv.set(`${env}NewPoem`, poetryRes, { ex: revalidate });
+      await kv.set(`${envType}NewPoem`, poetryRes, { ex: revalidate });
     }
 
-    ttl = await kv.ttl(`${env}NewPoem`);
+    ttl = await kv.ttl(`${envType}NewPoem`);
   }
 
   const { title, lines, styleName, styleExplanation } = poetryRes;
