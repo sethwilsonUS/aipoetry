@@ -21,7 +21,7 @@ const styles = [
   },
   {
     name: 'alliterative verse',
-    description: '10 lines of alliterative verse in the style of Old English poetry',
+    description: '10 lines of alliterative verse in the style of Old English poetry (note that not every word in the line need alliterate, as long as two or more do)',
     explanation: 'Alliterative verse is a form of poetry that relies on the repetition of initial consonant sounds to create rhythm and structure. This style was popular in Old English and Middle English poetry, and is often associated with epic narratives and heroic themes.',
     lines: 10,
   },
