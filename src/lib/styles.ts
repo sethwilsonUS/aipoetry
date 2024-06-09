@@ -9,19 +9,19 @@ const styles = [
   },
   {
     name: 'sonnet',
-    description: 'a Shakespearean sonnet',
+    description: 'a Shakespearean sonnet. The first quatrain should introduce a question or problem, the second quatrain should expand on it, the third quatrain should resolve it, and the final couplet should provide a conclusion.',
     explanation: 'A sonnet is a 14-line poem with a strict rhyme scheme (ABABCDCDEFEFGG). The first 12 lines are divided into three quatrains, while the final two lines form a rhyming couplet. Sonnets are often used to explore themes of love, beauty, and mortality.',
     lines: 14,
   },
   {
     name: 'haiku',
-    description: 'a traditional Japanese haiku',
+    description: 'a traditional Japanese haiku. Please dont feel the need to use the word "whisper" in every one of these :)',
     explanation: 'A haiku is a three-line poem with a strict syllable count (5-7-5). Haikus often focus on nature and the changing seasons, and are intended to evoke a sense of wonder and contemplation.',
     lines: 3,
   },
   {
     name: 'alliterative verse',
-    description: '10 lines of alliterative verse in the style of Old English poetry (note that not every word in the line need alliterate, as long as two or more do)',
+    description: '10 lines of alliterative verse consisting of four stressed syllables per line in the style of Beowulf and other Old English poetry (note that not every word in the line need alliterate)',
     explanation: 'Alliterative verse is a form of poetry that relies on the repetition of initial consonant sounds to create rhythm and structure. This style was popular in Old English and Middle English poetry, and is often associated with epic narratives and heroic themes.',
     lines: 10,
   },
