@@ -34,6 +34,8 @@ const topics = [
     'Taylor Swift',
     'ska music',
     'Cheetos',
+    'Doritos',
+    'surfing',
 ]
 
 export const getRandomTopic = () => {
