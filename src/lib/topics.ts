@@ -29,6 +29,11 @@ const topics = [
     'the game of crickt',
     'Oxford commas',
     'Oxford University',
+    'Sonic the Hedgehog',
+    'Super Mario Bros.',
+    'Taylor Swift',
+    'ska music',
+    'Cheetos',
 ]
 
 export const getRandomTopic = () => {
