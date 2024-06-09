@@ -21,7 +21,7 @@ const styles = [
   },
   {
     name: 'alliterative verse',
-    description: '10 lines of alliterative verse consisting of four stressed syllables per line in the style of Beowulf and other Old English poetry (note that not every word in the line need alliterate)',
+    description: '10 lines of alliterative verse consisting of four stressed syllables per line in the style of Beowulf and other Old English poetry (note that not every word in the line need alliterate; prefer sense and overall poetic flow over alliteration)',
     explanation: 'Alliterative verse is a form of poetry that relies on the repetition of initial consonant sounds to create rhythm and structure. This style was popular in Old English and Middle English poetry, and is often associated with epic narratives and heroic themes.',
     lines: 10,
   },
@@ -32,16 +32,16 @@ const styles = [
     lines: 9,
   },
   {
-    'name': 'blank verse',
-    'description': 'a 10-line poem in blank verse in the style of Milton\'s Paradise Lost',
-    'explanation': 'Blank verse is a form of poetry that uses unrhymed lines of iambic pentameter. This style was popularized by the English poet John Milton in his epic poem Paradise Lost, and is often used to explore complex themes and ideas.',
-    'lines': 10,
+    name: 'blank verse',
+    description: 'a 10-line poem in blank verse in the style of Milton\'s Paradise Lost',
+    explanation: 'Blank verse is a form of poetry that uses unrhymed lines of iambic pentameter. This style was popularized by the English poet John Milton in his epic poem Paradise Lost, and is often used to explore complex themes and ideas.',
+    lines: 10,
   },
   {
-    'name': 'iambic pentameter couplets',
-    'description': '10 lines of iambic pentameter in couplets in the style of Chaucer and the Canterbury Tales prologue',
-    'explanation': 'Iambic pentameter is a form of poetry that uses lines of five iambs (unstressed/stressed syllable pairs). This style is often used in English poetry and drama, and is associated with the works of William Shakespeare and other Renaissance writers.',
-    'lines': 10,  
+    name: 'iambic pentameter couplets',
+    description: '10 lines of iambic pentameter in couplets in the style of Chaucer and the Canterbury Tales prologue',
+    explanation: 'Iambic pentameter is a form of poetry that uses lines of five iambs (unstressed/stressed syllable pairs). This style is often used in English poetry and drama, and is associated with the works of William Shakespeare and other Renaissance writers.',
+    lines: 10,  
   },
 ]
 
