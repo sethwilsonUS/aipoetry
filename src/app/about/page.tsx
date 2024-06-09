@@ -36,12 +36,18 @@ const About: React.FC = () => {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-4">
-                <AccordionTrigger>How can I get involved?</AccordionTrigger>
+                <AccordionTrigger>I want to get involved!</AccordionTrigger>
                 <AccordionContent>
                   Cool! I would love for others to get involved in this project. For general ideas, criticism, kudos, and so forth, please see my LinkedIn profile and get in touch. I&apos;d especially love hearing from other literary types with cool ideas. For the developers among you, feel free to clone the GitHub repository and contribute some code.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-5">
+                <AccordionTrigger>My poem&apos;s got gibberish in it!</AccordionTrigger>
+                <AccordionContent>
+                  I am constantly tweaking various settings related to the model. In particular, I&apos;m experimenting with the temperature, which dictates how &quot;creative&quot; or &quot;experimental&quot; the model is allowed to be. For now, I err on the side of giving the model more leeway, which means these lapses will happen from time to time. Just have a good laugh and wait for the next poem.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-6">
                 <AccordionTrigger>About the Author</AccordionTrigger>
                 <AccordionContent>
                   Hi, I’m Seth Wilson! I&apos;m a legally blind software developer living in Tyler Texas. I’ve been working in the tech industry for around 7 years now, if you start the clock when I enrolled in an MS in Computer Science at the University of Texas, Tyler. Before that I lived in the world of academia, earning an Ms.C. in Medieval History from Oxford University in 2006 and an MA in English from UT Tyler in 2016. So I live at the intersection of the arts and sciences: jack of all trades, master of none.
