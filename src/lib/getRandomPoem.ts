@@ -36,7 +36,6 @@ const getRandomPoem = async (): Promise<IPoetry> => {
     styleExplanation: style.explanation,
   };
 
-
   return returnValue;
 }
 

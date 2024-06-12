@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic'
 import getRandomPoem from '@/lib/getRandomPoem';
 import { IPoetry } from '@/types/poetry';
 
+import { getPoems } from '@/lib/supabase';
+
 import Poetry from '../components/poetry';
 import Countdown from '../components/countdown';
 
@@ -33,6 +35,9 @@ export default async function Home() {
   }
 
   const { title, lines, styleName, styleExplanation } = poetryRes;
+
+  const poems = await getPoems();
+  console.log(JSON.stringify(poems, null, 2));
 
   return (
     <main className="flex flex-col items-center justify-between p-12">
