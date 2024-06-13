@@ -27,7 +27,10 @@ export const getPoems = async () => {
 const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
     topic,
-  }], { ignoreDuplicates: true, onConflict: 'topic'});
+  }], { ignoreDuplicates: true, onConflict: 'id, topic'});
+
+  const { data } = await supabase.from('topics').select('id').eq('topic', topic);
+  return data![0].id;
 }
 
 const insertStyle = async (style: any) => {
@@ -36,19 +39,21 @@ const insertStyle = async (style: any) => {
     description: style.description,
     user_explanation: style.explanation,
     number_of_lines: style.lines, 
-  }], { ignoreDuplicates: true, onConflict: 'name'})
-  .select();
+  }], { ignoreDuplicates: true, onConflict: 'id, name'});
+
+  const { data } = await supabase.from('styles').select('id').eq('name', style.name);
+  return data![0].id;
 }
 
 export const insertPoem = async (poem: any) => {
-  await insertTopic(poem.topic);
-  await insertStyle(poem.style);
+  const topicId = await insertTopic(poem.topic);
+  const styleId = await insertStyle(poem.style);
 
   const { error } = await supabase.from('poems').insert([{
     title: poem.title,
     text: poem.lines,
-    style: poem.style.name,
-    topic: poem.topic,
+    style: styleId,
+    topic: topicId,
     temperature: poem.temperature,
     created_by: 1,
     prompt: poem.prompt,
