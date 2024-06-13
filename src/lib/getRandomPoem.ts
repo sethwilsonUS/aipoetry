@@ -7,6 +7,7 @@ import { getRandomTopic } from './topics';
 import { getRandomStyle } from './styles';
 import schemify from './schemify';
 import { IPoetry } from '@/types/poetry';
+import { insertPoem } from './supabase';
 
 const getRandomPoem = async (): Promise<IPoetry> => {
   const topic: string = getRandomTopic();
@@ -19,24 +20,37 @@ const getRandomPoem = async (): Promise<IPoetry> => {
                   Also, please, no blank lines between stanzas.
   `;
 
+  const model = 'gpt-4o';
+  const temperature = 1.3;
+
   const result = await generateObject({
-    model: openai('gpt-4o'),
+    model: openai(model),
     prompt,
     schema,
     maxRetries: 3,
-    temperature: 1.36,
+    temperature,
   });
 
   const { title, lines } = result.object;
 
-  const returnValue = {
+  await insertPoem({
+    title,
+    lines,
+    topic,
+    style,
+    temperature,
+    model,
+    prompt,
+  });
+
+  const clientPayload = {
     title,
     lines,
     styleName: style.name,
     styleExplanation: style.explanation,
   };
 
-  return returnValue;
+  return clientPayload;
 }
 
 export default getRandomPoem;
