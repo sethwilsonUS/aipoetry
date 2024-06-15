@@ -14,11 +14,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body>
         <Navbar />
-          <main className="flex flex-col items-center justify-between p-12">
-            <div className="flex flex-col z-10 w-full max-w-4xl justify-between lg:flex">
+          <main className='flex flex-col items-center justify-between p-12'>
+            <div className='flex flex-col z-10 w-full max-w-4xl justify-between lg:flex'>
               {children}
             </div>
           </main>

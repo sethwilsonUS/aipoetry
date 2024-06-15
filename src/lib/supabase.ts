@@ -22,7 +22,7 @@ export const getPoems = async () => {
   }
 
   return data;
-}
+};
 
 export const getPoemTitles = async () => {
   const { data, error } = await supabase.from('poems').select(`
@@ -38,7 +38,7 @@ export const getPoemTitles = async () => {
   }
 
   return data;
-}
+};
 
 export const getPoem = async (id: number) => {
   const { data, error } = await supabase.from('poems').select(`
@@ -55,16 +55,20 @@ export const getPoem = async (id: number) => {
   }
 
   return data[0];
-}
+};
 
 const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
     topic,
   }], { ignoreDuplicates: true, onConflict: 'id, topic'});
 
+  if (error) {
+    console.log(error);
+  }
+
   const { data } = await supabase.from('topics').select('id').eq('topic', topic);
   return data![0].id;
-}
+};
 
 const insertStyle = async (style: any) => {
   const { error } = await supabase.from('styles').upsert([{
@@ -74,9 +78,13 @@ const insertStyle = async (style: any) => {
     number_of_lines: style.lines, 
   }], { ignoreDuplicates: true, onConflict: 'id, name'});
 
+  if (error) {
+    console.log(error);
+  }
+  
   const { data } = await supabase.from('styles').select('id').eq('name', style.name);
   return data![0].id;
-}
+};
 
 export const insertPoem = async (poem: any) => {
   const topicId = await insertTopic(poem.topic);
@@ -96,4 +104,4 @@ export const insertPoem = async (poem: any) => {
   if (error) {
     console.log(error);
   }
-}
+};

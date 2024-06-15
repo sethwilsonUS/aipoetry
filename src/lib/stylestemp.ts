@@ -1,6 +1,6 @@
 // other potential styles to add
 
-const style = [
+const stylesTemp = [
   {
     name: 'ode',
     description: 'a Pindaric ode',
@@ -110,3 +110,5 @@ const style = [
     description: 'a sapphic ode--i.e. in the style of Sappho of Lesbos',
   },
 ];
+
+export default stylesTemp;

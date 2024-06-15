@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 const styles = [
   {
     name: 'limerick',
@@ -43,7 +41,7 @@ const styles = [
     explanation: 'Iambic pentameter is a form of poetry that uses lines of five iambs (unstressed/stressed syllable pairs). This style is often used in English poetry and drama, and is associated with the works of William Shakespeare and other Renaissance writers.',
     lines: 10,  
   },
-]
+];
 
 export const getRandomStyle = () => {
   const randomIndex = Math.floor(Math.random() * styles.length);

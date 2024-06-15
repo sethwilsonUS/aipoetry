@@ -21,6 +21,6 @@ const Page: React.FC<{ params: { id: number } }> = async ({ params }) => {
       />
     </>
   );
-}
+};
 
 export default Page;
