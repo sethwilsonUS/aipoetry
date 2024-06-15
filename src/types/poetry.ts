@@ -4,7 +4,3 @@ export interface IPoetry {
   styleName: string;
   styleExplanation: string;
 }
-
-export interface IPoetryComponentProps extends IPoetry {
-  ttl: number;
-}

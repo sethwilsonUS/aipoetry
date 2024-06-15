@@ -24,6 +24,23 @@ export const getPoems = async () => {
   return data;
 }
 
+export const getPoem = async (id: number) => {
+  const { data, error } = await supabase.from('poems').select(`
+    title,
+    text,
+    style (
+      name,
+      user_explanation
+    )
+  `).eq('id', id);
+
+  if (error) {
+    throw error;
+  }
+
+  return data[0];
+}
+
 const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
     topic,
