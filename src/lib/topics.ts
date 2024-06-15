@@ -36,9 +36,9 @@ const topics = [
     'Cheetos',
     'Doritos',
     'surfing',
-]
+];
 
 export const getRandomTopic = () => {
     const randomIndex = Math.floor(Math.random() * topics.length);
     return topics[randomIndex];
-}
+};

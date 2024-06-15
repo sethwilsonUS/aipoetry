@@ -2,6 +2,10 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "quotes": ["error", "single"],
+    "jsx-quotes": ["error", "prefer-single"],
+    "semi": ["error", "always"],
+    "no-unused-vars": "error",
+    "no-console": "warn",
     "comma-dangle": ["error", {
       "arrays": "only-multiline",
       "objects": "only-multiline",

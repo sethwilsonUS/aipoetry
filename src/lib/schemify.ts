@@ -5,6 +5,6 @@ const schemify = (lines: number) => {
     title: z.string(),
     lines: z.array(z.string()).max(lines),
   });
-}
+};
 
 export default schemify;

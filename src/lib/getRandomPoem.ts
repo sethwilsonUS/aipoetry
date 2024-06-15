@@ -52,6 +52,6 @@ const getRandomPoem = async (): Promise<IPoetry> => {
   };
 
   return clientPayload;
-}
+};
 
 export default getRandomPoem;

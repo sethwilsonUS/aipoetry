@@ -1,6 +1,5 @@
 import { revalidatePath } from 'next/cache';
 import { kv } from '@vercel/kv';
-import dynamic from 'next/dynamic'
 import getRandomPoem from '@/lib/getRandomPoem';
 import { IPoetry } from '@/types/poetry';
 
