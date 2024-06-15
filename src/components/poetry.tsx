@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { PopoverTrigger, PopoverClose, PopoverContent, Popover } from '@/components/ui/popover'
-import { IPoetryComponentProps } from '@/types/poetry'
+import { IPoetry } from '@/types/poetry'
 
-const Poetry: React.FC<IPoetryComponentProps> = (props) => {
-  const { title, lines, styleName, styleExplanation, ttl } = props;
+const Poetry: React.FC<IPoetry> = (props) => {
+  const { title, lines, styleName, styleExplanation } = props;
   return (
     <div className="w-full p-4 lg:p-12 bg-white dark:bg-gray-900">
       <article className="prose prose-gray max-w-3xl mx-auto dark:prose-invert">

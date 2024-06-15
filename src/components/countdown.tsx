@@ -6,9 +6,6 @@ import { clear } from 'console';
 
 const Countdown: React.FC<{ttl: number}> = (props) =>{
   const nextPoemTime = Date.now() + props.ttl * 1000;
-  const readyForNextPoem = () => {
-    return Date.now() >= nextPoemTime;
-  }
 
   const [promptRefresh, setPromptRefresh] = useState(false);
   const [isClient, setIsClient] = useState(false)

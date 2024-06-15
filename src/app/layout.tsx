@@ -17,7 +17,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Navbar />
-        {children}
+          <main className="flex flex-col items-center justify-between p-12">
+            <div className="flex flex-col z-10 w-full max-w-4xl justify-between lg:flex">
+              {children}
+            </div>
+          </main>
       </body>
     </html>
   );

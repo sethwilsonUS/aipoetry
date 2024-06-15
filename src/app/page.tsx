@@ -33,17 +33,14 @@ export default async function Home() {
   const { title, lines, styleName, styleExplanation } = poetryRes;
   
   return (
-    <main className="flex flex-col items-center justify-between p-12">
-      <div className="flex flex-col z-10 w-full max-w-4xl justify-between lg:flex">
-        <Poetry
-          title={title}
-          lines={lines}
-          styleName={styleName}
-          styleExplanation={styleExplanation}
-          ttl={ttl}
-        />
-        <Countdown ttl={ttl} />
-      </div>
-    </main>
+    <>
+      <Poetry
+        title={title}
+        lines={lines}
+        styleName={styleName}
+        styleExplanation={styleExplanation}
+      />
+      <Countdown ttl={ttl} />
+    </>
   );
 }
