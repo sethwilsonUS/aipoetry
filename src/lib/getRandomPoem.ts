@@ -1,7 +1,6 @@
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
-import { NextResponse } from 'next/server';
-import { z } from 'zod';
+import { revalidatePath } from 'next/cache';
 
 import { getRandomTopic } from './topics';
 import { getRandomStyle } from './styles';
@@ -42,6 +41,8 @@ const getRandomPoem = async (): Promise<IPoetry> => {
     model,
     prompt,
   });
+
+  revalidatePath('/poems');
 
   const clientPayload = {
     title,
