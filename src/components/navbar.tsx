@@ -10,6 +10,14 @@ export default function Navbar() {
         </Link>
       </div>
       <div className='flex items-center gap-4'>
+      <Link
+          href='/poems'
+          className='text-sm font-medium text-white hover:underline hover:underline-offset-4'
+          prefetch={true}
+        >
+          Archive
+        </Link>
+
         <Link
           href='/about'
           className='text-sm font-medium text-white hover:underline hover:underline-offset-4'
