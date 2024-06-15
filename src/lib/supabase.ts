@@ -24,6 +24,22 @@ export const getPoems = async () => {
   return data;
 }
 
+export const getPoemTitles = async () => {
+  const { data, error } = await supabase.from('poems').select(`
+    id,
+    title,
+    style (
+      name
+    )
+  `);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 export const getPoem = async (id: number) => {
   const { data, error } = await supabase.from('poems').select(`
     title,
