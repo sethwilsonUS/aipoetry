@@ -24,22 +24,22 @@ import generateUserPoem from '@/app/actions';
 
 export default function UserGen({ styles, poemIds }: any) {
   const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [formError, setFormError] = useState();
 
   const action = async (formData: FormData) => {
     const topic = formData.get('topic');
     const style = formData.get('style');
 
-    generateUserPoem({ topic, style });
+    const { error } = await generateUserPoem({ topic, style });
+
+    if (error) {
+      setFormError(error);
+    }
   };
 
   const showRandomPoem = () => {
     const randomPoem = poemIds[Math.floor(Math.random() * poemIds.length)];
     router.push(`/poems/${randomPoem.id}`);
-  };
-
-  const handleDropdownOpen = (o: boolean) => {
-    setIsDropdownOpen(o);
   };
 
   return (
@@ -49,7 +49,7 @@ export default function UserGen({ styles, poemIds }: any) {
           <CardTitle>Generate a Poem</CardTitle>
           <CardDescription>Provide a topic and select a poetic style to generate a poem. Note that generated poems will be public.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='space-y-4'>
           <form className='space-y-4' action={action}>
             <Input
               type='text'
@@ -57,7 +57,7 @@ export default function UserGen({ styles, poemIds }: any) {
               placeholder='Enter a topic'
               required
             />
-            <Select name='style' required onOpenChange={handleDropdownOpen}>
+            <Select name='style' required>
               <SelectTrigger>
                 <SelectValue placeholder='Select a style' />
               </SelectTrigger>
@@ -68,13 +68,16 @@ export default function UserGen({ styles, poemIds }: any) {
               </SelectContent>
             </Select>
             <SubmitButton />
-            <div className='text-center'>
+            {formError && (
+              <div className='bg-red-800 text-white p-4 rounded-md'>{formError}</div>
+            )}
+          </form>
+          <div className='text-center'>
               <h2>OR</h2>
             </div>
-            <Button disabled={isDropdownOpen} variant='secondary' type='button' className='btn w-full' onClick={showRandomPoem}>
+          <Button variant='secondary' type='button' className='btn w-full' onClick={showRandomPoem}>
                 I&apos;M FEELING PLUCKY!
             </Button>
-          </form>
         </CardContent>
       </Card>
     </section>
