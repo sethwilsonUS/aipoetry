@@ -59,7 +59,7 @@ export const getPoem = async (id: number) => {
 
 export const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
-    topic,
+    name: topic,
   }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {
@@ -67,6 +67,7 @@ export const insertTopic = async (topic: string) => {
   }
 
   const { data } = await supabase.from('topics').select().eq('name', topic).single();
+  console.log(`topid data: ${JSON.stringify(data, null, 2)}`);
   return data!;
 };
 
