@@ -11,7 +11,7 @@ import { Ratelimit } from '@upstash/ratelimit';
 const generateUserPoem = async (input: any) => {
   const rateLimit = new Ratelimit({
     redis: kv,
-    limiter: Ratelimit.fixedWindow(5, '5m'),
+    limiter: Ratelimit.fixedWindow(5, '3600s'),
   });
 
   const ip = headers().get('x-forwarded-for');
@@ -20,8 +20,7 @@ const generateUserPoem = async (input: any) => {
   );
 
   if (!success) {
-    console.log('Rate limit exceeded');
-    return;
+    return { error: 'You may generate a maximum of five poems every hour. If you\'re feeling plucky, you can grab a random poem (or three) while you wait!' };
   }
 
   const { topic, style } = input;
