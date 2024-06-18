@@ -17,7 +17,6 @@ export default function Navbar() {
         >
           Archive
         </Link>
-
         <Link
           href='/about'
           className='text-sm font-medium text-white hover:underline hover:underline-offset-4'

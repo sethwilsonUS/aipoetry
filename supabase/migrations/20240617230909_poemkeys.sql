@@ -1,0 +1,16 @@
+alter table "public"."poems" drop constraint "poems_style_fkey";
+alter table "public"."poems" drop constraint "poems_topic_fkey";
+alter table "public"."styles" drop constraint "styles_pkey";
+alter table "public"."topics" drop constraint "topics_pkey";
+drop index if exists "public"."styles_pkey";
+drop index if exists "public"."topics_pkey";
+alter table "public"."poems" alter column "style" set data type text using "style"::text;
+alter table "public"."poems" alter column "topic" set data type text using "topic"::text;
+CREATE UNIQUE INDEX styles_pkey ON public.styles USING btree (name);
+CREATE UNIQUE INDEX topics_pkey ON public.topics USING btree (topic);
+alter table "public"."styles" add constraint "styles_pkey" PRIMARY KEY using index "styles_pkey";
+alter table "public"."topics" add constraint "topics_pkey" PRIMARY KEY using index "topics_pkey";
+alter table "public"."poems" add constraint "public_poems_style_fkey" FOREIGN KEY (style) REFERENCES styles(name) not valid;
+alter table "public"."poems" validate constraint "public_poems_style_fkey";
+alter table "public"."poems" add constraint "public_poems_topic_fkey" FOREIGN KEY (topic) REFERENCES topics(topic) not valid;
+alter table "public"."poems" validate constraint "public_poems_topic_fkey";
