@@ -60,7 +60,7 @@ export const getPoem = async (id: number) => {
 const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
     topic,
-  }], { ignoreDuplicates: true, onConflict: 'id, topic'});
+  }], { ignoreDuplicates: true, onConflict: 'topic'});
 
   if (error) {
     console.log(error);
@@ -76,7 +76,7 @@ const insertStyle = async (style: any) => {
     description: style.description,
     user_explanation: style.explanation,
     number_of_lines: style.lines, 
-  }], { ignoreDuplicates: true, onConflict: 'id, name'});
+  }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {
     console.log(error);
@@ -89,6 +89,8 @@ const insertStyle = async (style: any) => {
 export const insertPoem = async (poem: any) => {
   const topicId = await insertTopic(poem.topic);
   const styleId = await insertStyle(poem.style);
+
+  console.log(`Topic ID: ${topicId}, Style ID: ${styleId}`);
 
   const { error } = await supabase.from('poems').insert([{
     title: poem.title,
