@@ -24,7 +24,7 @@ import generateUserPoem from '@/app/actions';
 
 export default function UserGen({ styles, poemIds }: any) {
   const router = useRouter();
-  const [formError, setFormError] = useState();
+  const [formError, setFormError] = useState('');
 
   const action = async (formData: FormData) => {
     const topic = formData.get('topic');
