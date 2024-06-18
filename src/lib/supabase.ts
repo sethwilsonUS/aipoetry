@@ -57,20 +57,20 @@ export const getPoem = async (id: number) => {
   return data[0];
 };
 
-const insertTopic = async (topic: string) => {
+export const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
     topic,
-  }], { ignoreDuplicates: true, onConflict: 'topic'});
+  }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {
     console.log(error);
   }
 
-  const { data } = await supabase.from('topics').select('id').eq('topic', topic);
-  return data![0].id;
+  const { data } = await supabase.from('topics').select().eq('name', topic).single();
+  return data!;
 };
 
-const insertStyle = async (style: any) => {
+export const insertStyle = async (style: any) => {
   const { error } = await supabase.from('styles').upsert([{
     name: style.name,
     description: style.description,
@@ -82,28 +82,31 @@ const insertStyle = async (style: any) => {
     console.log(error);
   }
   
-  const { data } = await supabase.from('styles').select('id').eq('name', style.name);
-  return data![0].id;
+  const { data } = await supabase.from('styles').select().eq('name', style.name).single();
+  return data;
 };
 
 export const insertPoem = async (poem: any) => {
-  const topicId = await insertTopic(poem.topic);
-  const styleId = await insertStyle(poem.style);
+  const topic = await insertTopic(poem.topic);
+  const style = await insertStyle(poem.style);
 
-  console.log(`Topic ID: ${topicId}, Style ID: ${styleId}`);
+  console.log(`Topic ID: ${topic.id}, Style ID: ${style.id}`);
 
-  const { error } = await supabase.from('poems').insert([{
+  const { data, error } = await supabase.from('poems').insert([{
     title: poem.title,
     text: poem.lines,
-    style: styleId,
-    topic: topicId,
+    style: style.id,
+    topic: topic.id,
     temperature: poem.temperature,
     created_by: 1,
     prompt: poem.prompt,
     model: poem.model,
-  }]);
+  }]).select('id').single();
 
   if (error) {
     console.log(error);
   }
+
+  console.log(`Poem ID: ${data!.id}`);
+  return data!.id;
 };
