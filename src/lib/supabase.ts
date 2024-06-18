@@ -59,7 +59,11 @@ export const getPoem = async (id: number) => {
 
 export const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
+<<<<<<< HEAD
     name: topic,
+=======
+    topic,
+>>>>>>> 8ad72f0 (initial sloppy user gen setup)
   }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {

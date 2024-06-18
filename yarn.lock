@@ -946,6 +946,25 @@
   dependencies:
     "@types/node" "*"
 
+"@typeschema/core@0.13.2":
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/@typeschema/core/-/core-0.13.2.tgz#c9bb572a67918a8a3f615023d37e0bdb9705097a"
+  integrity sha512-pAt0MK249/9szYaoPuvzhSfOd3smrLhhwCCpUNB4onX32mRx5F3lzDIveIYGQkLYRq58xOX5sjoW+n72f/MLLw==
+
+"@typeschema/main@^0.13.9":
+  version "0.13.10"
+  resolved "https://registry.yarnpkg.com/@typeschema/main/-/main-0.13.10.tgz#bc820ffd5c3da3b0576b345554bd04a30b561ff7"
+  integrity sha512-ArdFC4GbgdVWWgPKg2tymxx2KHMus3xZ8I2kHwqw/0P4FtWBXCmSNAiBqDtpoXXF8h9cbcm7fVpcs5ftoWT9+A==
+  dependencies:
+    "@typeschema/core" "0.13.2"
+
+"@typeschema/zod@^0.13.3":
+  version "0.13.3"
+  resolved "https://registry.yarnpkg.com/@typeschema/zod/-/zod-0.13.3.tgz#6dc975074a246188e07a630bded95d7f765cd042"
+  integrity sha512-p5Hs22WIKkM/vZTAvw5QOLSA0EJ6QBUsQMGUrXlYnTAE2LSR/F5MLsDUb18O6S5VxGjrzU7x3VIznD5qOafJRw==
+  dependencies:
+    "@typeschema/core" "0.13.2"
+
 "@typescript-eslint/parser@^5.4.2 || ^6.0.0 || 7.0.0 - 7.2.0":
   version "7.2.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-7.2.0.tgz"
@@ -2998,6 +3017,14 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
+
+next-safe-action@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/next-safe-action/-/next-safe-action-7.0.2.tgz#fe2a2fb0b32d39b53b5561e041c20ab49dd26b36"
+  integrity sha512-Zjxo5HhOV0vUxKP2zf4UE5d603oCwdr9CNadc4aImJnYrcpfed3S/mUf2gfXEHjTjRyPoTQ+s4oLMy5rATGuPQ==
+  dependencies:
+    "@typeschema/main" "^0.13.9"
+    "@typeschema/zod" "^0.13.3"
 
 next@14.2.3:
   version "14.2.3"
