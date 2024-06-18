@@ -5,15 +5,12 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export const getPoems = async () => {
+export const getPoemTitles = async () => {
   const { data, error } = await supabase.from('poems').select(`
+    id,
     title,
-    text,
     style (
-      name,
-      description,
-      user_explanation,
-      number_of_lines
+      name
     )
   `);
 
@@ -24,14 +21,8 @@ export const getPoems = async () => {
   return data;
 };
 
-export const getPoemTitles = async () => {
-  const { data, error } = await supabase.from('poems').select(`
-    id,
-    title,
-    style (
-      name
-    )
-  `);
+export const getPoemIds = async () => {
+  const { data, error } = await supabase.from('poems').select('id');
 
   if (error) {
     throw error;
@@ -51,27 +42,45 @@ export const getPoem = async (id: number) => {
   `).eq('id', id);
 
   if (error) {
+    console.log(`get poem error: ${error}`);
     throw error;
   }
 
   return data[0];
 };
 
+export const getStyles = async () => {
+  const { data, error } = await supabase.from('styles').select('id, name, description');
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getStyleByName = async (name: string) => {
+  console.log(`style name in getStyleByName: ${JSON.stringify(name, null, 2)}`);
+  const { data, error } = await supabase.from('styles').select().eq('name', name).single();
+
+  if (error) {
+    console.log(`get style error: ${error}`);
+  }
+
+  return data;
+};
+
 export const insertTopic = async (topic: string) => {
   const { error } = await supabase.from('topics').upsert([{
-<<<<<<< HEAD
     name: topic,
-=======
-    topic,
->>>>>>> 8ad72f0 (initial sloppy user gen setup)
   }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {
-    console.log(error);
+    console.log(`Topic error: ${error}`);
   }
 
   const { data } = await supabase.from('topics').select().eq('name', topic).single();
-  console.log(`topid data: ${JSON.stringify(data, null, 2)}`);
+  console.log(`topic data: ${JSON.stringify(data, null, 2)}`);
   return data!;
 };
 
@@ -84,7 +93,7 @@ export const insertStyle = async (style: any) => {
   }], { ignoreDuplicates: true, onConflict: 'name'});
 
   if (error) {
-    console.log(error);
+    console.log(`style error: ${error}`);
   }
   
   const { data } = await supabase.from('styles').select().eq('name', style.name).single();
@@ -93,7 +102,7 @@ export const insertStyle = async (style: any) => {
 
 export const insertPoem = async (poem: any) => {
   const topic = await insertTopic(poem.topic);
-  const style = await insertStyle(poem.style);
+  const style = await getStyleByName(poem.style.name);
 
   console.log(`Topic ID: ${topic.id}, Style ID: ${style.id}`);
 
@@ -109,7 +118,7 @@ export const insertPoem = async (poem: any) => {
   }]).select('id').single();
 
   if (error) {
-    console.log(error);
+    console.log(`poem error ${error}`);
   }
 
   console.log(`Poem ID: ${data!.id}`);
