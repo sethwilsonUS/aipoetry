@@ -42,6 +42,7 @@ export default function UserGen({ styles, poemIds }: any) {
     router.push(`/poems/${randomPoem.id}`);
   };
 
+
   return (
     <section>
       <Card className='border-0 shadow-none'>
@@ -61,7 +62,14 @@ export default function UserGen({ styles, poemIds }: any) {
               <SelectTrigger>
                 <SelectValue placeholder='Select a style' />
               </SelectTrigger>
-              <SelectContent className='z-50'>
+              <SelectContent
+                ref={(ref) =>
+                  // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+                  ref?.addEventListener('touchend', (e) =>
+                    e.preventDefault(),
+                  )
+                }
+              >
                 {styles.map((style: any) => (
                   <SelectItem key={style.id} value={style.name}>{style.name}</SelectItem>
                 ))}
