@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import generatePoem from '@/lib/generatePoem';
 import { insertPoem } from '@/lib/supabase';
-import kv from '@vercel/kv';
+import { kv } from '@vercel/kv';
 import { headers } from 'next/headers';
 import { Ratelimit } from '@upstash/ratelimit';
 
