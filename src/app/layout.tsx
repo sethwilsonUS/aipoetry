@@ -5,7 +5,7 @@ import Navbar from '@/components/navbar';
 export const metadata: Metadata = {
   title: 'Infinite Poetry',
   description: 'AI-generated poems on a variety of topics in a variety of styles.',
-  metadataBase: new URL('http://aipoetry.vercel.app/'),
+  metadataBase: new URL('http://infinitepoetry.ai/'),
 };
 
 export default function RootLayout({
