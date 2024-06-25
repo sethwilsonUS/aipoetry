@@ -1,6 +1,7 @@
 'use server';
 
-import { openai } from '@ai-sdk/openai';
+// import { openai } from '@ai-sdk/openai';
+import { anthropic } from '@ai-sdk/anthropic';
 import { generateObject } from 'ai';
 
 import { getStyleByName } from './supabase';
@@ -16,11 +17,11 @@ const generatePoem = async (topicName: string, styleName: string): Promise<any> 
                   Also, please, no blank lines between stanzas.
   `;
 
-  const model = 'gpt-4o';
-  const temperature = 1.3;
+  const model = 'claude-3-5-sonnet-20240620';
+  const temperature = 0.9;
 
   const result = await generateObject({
-    model: openai(model),
+    model: anthropic(model),
     prompt,
     schema,
     maxRetries: 3,
