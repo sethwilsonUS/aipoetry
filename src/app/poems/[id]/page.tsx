@@ -1,5 +1,10 @@
 import Poetry from '@/components/poetry';
-import { getPoem } from '@/lib/supabase';
+import { getPoem, getPoemIds } from '@/lib/supabase';
+
+export const generateStaticParams = async () => {
+  const poemIds = await getPoemIds();
+  return poemIds.map((id) => ({ params: { id } }));
+};
 
 const Page: React.FC<{ params: { id: number } }> = async ({ params }) => {
   const poem = await getPoem(params.id);
