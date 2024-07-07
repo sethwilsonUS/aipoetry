@@ -28,7 +28,7 @@ const About: React.FC = () => {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value='item-3'>
-            <AccordionTrigger>Why only one poem per hour?</AccordionTrigger>
+            <AccordionTrigger>Why only five poems per hour?</AccordionTrigger>
             <AccordionContent>
               Those of you using the free version of ChatGPT or other LLMs may be surprised to learn that using LLMs cost money. Someone, even if it&apos;s not you, is paying for these intensive computations. In this case, that someone is me, and since this is only a hobby project for now, I don’t want to invest too heavily.
             </AccordionContent>
