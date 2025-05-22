@@ -17,7 +17,7 @@ const generatePoem = async (topicName: string, styleName: string): Promise<any> 
                   Also, please, no blank lines between stanzas.
   `;
 
-  const model = 'claude-3-7-sonnet-latest';
+  const model = 'claude-sonnet-4-20250514';
   const temperature = 0.9;
 
   const result = await generateObject({
