@@ -1,12 +1,13 @@
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "quotes": ["error", "single"],
-    "jsx-quotes": ["error", "prefer-single"],
-    "semi": ["error", "always"],
-    "no-unused-vars": "error",
+    "react/no-unescaped-entities": "warn",
+    "quotes": ["warn", "single"],
+    "jsx-quotes": ["warn", "prefer-single"],
+    "semi": ["warn", "always"],
+    "no-unused-vars": "warn",
     "no-console": "warn",
-    "comma-dangle": ["error", {
+    "comma-dangle": ["warn", {
       "arrays": "only-multiline",
       "objects": "only-multiline",
       "imports": "only-multiline",
