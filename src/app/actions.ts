@@ -9,15 +9,22 @@ import { headers } from 'next/headers';
 import { Ratelimit } from '@upstash/ratelimit';
 
 const generateUserPoem = async (input: any) => {
-  const rateLimit = new Ratelimit({
-    redis: kv,
-    limiter: Ratelimit.fixedWindow(5, '3600s'),
-  });
-
-  const ip = headers().get('x-forwarded-for');
-  const { success } = await rateLimit.limit(
-    ip ?? 'anonymous_ip'
-  );
+  let success = true;
+  try {
+    const rateLimit = new Ratelimit({
+      redis: kv,
+      limiter: Ratelimit.fixedWindow(5, '3600s'),
+    });
+  
+    const ip = headers().get('x-forwarded-for');
+    const result = await rateLimit.limit(
+      ip ?? 'anonymous_ip'
+    );
+    success = result.success;
+  } catch {
+    // If the rate limiter fails for any reason, default to allowing the request
+    success = true;
+  }
 
   if (!success) {
     return { error: 'You may generate a maximum of five poems every hour. If you\'re feeling plucky, you can grab a random poem (or three) while you wait!' };
