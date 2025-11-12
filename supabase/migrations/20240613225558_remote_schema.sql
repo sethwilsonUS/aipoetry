@@ -8,6 +8,11 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+-- Ensure extension schemas exist before creating extensions (local shadow DBs may not have them yet)
+CREATE SCHEMA IF NOT EXISTS "pgsodium";
+CREATE SCHEMA IF NOT EXISTS "graphql";
+CREATE SCHEMA IF NOT EXISTS "extensions";
+CREATE SCHEMA IF NOT EXISTS "vault";
 CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
