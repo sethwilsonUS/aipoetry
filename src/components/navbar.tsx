@@ -1,97 +1,113 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import ThemeToggle from './theme-toggle';
+
+const NAV_LINKS = [
+  { href: '/',       label: 'Generate' },
+  { href: '/poems',  label: 'Archive'  },
+  { href: '/about',  label: 'About'    },
+];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
-    <header className='flex h-12 w-full items-center justify-between bg-[#0070f3] px-4 md:px-6 dark:bg-blue-800'>
-      <div className='flex items-center gap-2'>
-        <InfinityIcon className='h-6 w-6 text-white' />
-        <Link href='/' className='text-lg font-bold text-white' prefetch={false}>
-          Infinite Poetry
-        </Link>
-      </div>
-      <div className='flex items-center gap-4'>
-      <Link
-          href='/poems'
-          className='text-sm font-medium text-white hover:underline hover:underline-offset-4'
-          prefetch={true}
-        >
-          Archive
-        </Link>
-        <Link
-          href='/about'
-          className='text-sm font-medium text-white hover:underline hover:underline-offset-4'
-          prefetch={true}
-        >
-          About
-        </Link>
-        <Link href='https://github.com/sethwilsonUS/aipoetry' target='_blank' prefetch={false}>
-          <GithubIcon className='h-6 w-6 text-white' />
-          <span className='sr-only'>GitHub</span>
-        </Link>
-        <Link href='https://artsai.substack.com/' target='_blank' prefetch={false}>
-          <MailIcon className='h-6 w-6 text-white' />
-          <span className='sr-only'>Newsletter</span>
-        </Link>
-      </div>
+    <header role='banner'>
+      <nav className='navbar' aria-label='Main navigation'>
+        <div className='h-full max-w-5xl mx-auto px-4 flex items-center justify-between gap-4'>
+
+          {/* Brand */}
+          <Link
+            href='/'
+            className='flex items-center gap-2 text-[var(--text-primary)] no-underline shrink-0'
+            aria-label='Infinite Poetry — home'
+          >
+            <LeafIcon className='w-5 h-5 text-[var(--accent)]' aria-hidden='true' />
+            <span
+              className='font-semibold text-base tracking-tight'
+              style={{ fontFamily: 'var(--font-display), serif' }}
+            >
+              Infinite Poetry
+            </span>
+          </Link>
+
+          {/* Nav links */}
+          <ul className='flex items-center gap-1 list-none m-0 p-0' role='list'>
+            {NAV_LINKS.map(({ href, label }) => {
+              const isActive = pathname === href;
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={[
+                      'px-3 py-1.5 rounded-lg text-sm font-medium no-underline transition-colors duration-150',
+                      isActive
+                        ? 'bg-[var(--accent-bg)] text-[var(--accent)]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]',
+                    ].join(' ')}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Actions */}
+          <div className='flex items-center gap-1 shrink-0'>
+            <a
+              href='https://github.com/sethwilsonUS/aipoetry'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='btn-ghost w-9 h-9 p-0 rounded-lg'
+              aria-label='View source on GitHub'
+            >
+              <GitHubIcon className='w-5 h-5' aria-hidden='true' />
+            </a>
+            <a
+              href='https://artsai.substack.com/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='btn-ghost w-9 h-9 p-0 rounded-lg'
+              aria-label='Subscribe to the newsletter'
+            >
+              <MailIcon className='w-5 h-5' aria-hidden='true' />
+            </a>
+            <ThemeToggle />
+          </div>
+
+        </div>
+      </nav>
     </header>
   );
 }
 
-function GithubIcon(props: any) {
+function LeafIcon({ className }: { className?: string }) {
   return (
-    <svg
-      {...props}
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
+    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+      <path d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z' />
+      <path d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12' />
+    </svg>
+  );
+}
+
+function GitHubIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
       <path d='M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4' />
       <path d='M9 18c-4.51 2-5-2-7-2' />
     </svg>
   );
 }
 
-function MailIcon(props: any) {
+function MailIcon({ className }: { className?: string }) {
   return (
-    <svg
-      {...props}
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
+    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
       <rect width='20' height='16' x='2' y='4' rx='2' />
       <path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' />
-    </svg>
-  );
-}
-
-function InfinityIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z' />
     </svg>
   );
 }

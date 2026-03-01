@@ -1,15 +1,20 @@
 import PoemsList from '@/components/poems-list';
 
-const Poems = () => {
+export default function PoemsPage() {
   return (
-    <div className='w-full p-4 lg:p-12 bg-white dark:bg-gray-900'>
-      <article className='prose prose-gray max-w-3xl mx-auto dark:prose-invert'>
-        <h1 className='text-4xl font-bold tracking-tight lg:text-5xl pr-2'>The Poetry Archive</h1>
-        <br />
-        <PoemsList />
-      </article>
+    <div className='max-w-3xl mx-auto px-4 py-12'>
+      <header className='mb-10'>
+        <h1
+          className='text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-3'
+          style={{ fontFamily: 'var(--font-display), serif' }}
+        >
+          The Archive
+        </h1>
+        <p className='text-[var(--text-secondary)]'>
+          Every poem generated so far, in reverse order of planting.
+        </p>
+      </header>
+      <PoemsList />
     </div>
   );
-};
-
-export default Poems;
+}

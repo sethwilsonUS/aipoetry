@@ -2,32 +2,434 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================
+   Infinite Poetry — Garden Theme
+   Calm, literary, warm. Built for verse.
+   All color pairs pass WCAG 2.2 AA.
+   ============================================= */
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --font-display: "Fraunces", serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Light theme */
+  --bg-primary:   #f7f6f3;
+  --bg-secondary: #efede8;
+  --bg-tertiary:  #e5e2db;
+  --bg-nav:       rgba(247, 246, 243, 0.88);
+
+  --text-primary:   #1a1a1a;
+  --text-secondary: #4b5441;
+  --text-muted:     #516247;
+  --border-color:   #d4d1c7;
+
+  --accent:        #036B4A;
+  --accent-hover:  #065f46;
+  --accent-bg:     rgba(4, 120, 87, 0.08);
+  --accent-border: rgba(4, 120, 87, 0.25);
+  --accent-glow:   rgba(4, 120, 87, 0.10);
+
+  --btn-primary-bg:    #036B4A;
+  --btn-primary-hover: #065f46;
+  --btn-primary-text:  #ffffff;
+
+  --skeleton-base:  #e5e2db;
+  --skeleton-shine: #efede8;
+  --pattern-color:  rgba(4, 120, 87, 0.06);
+
+  --gradient-1: #f7f6f3;
+  --gradient-2: #efede8;
+  --gradient-3: #f7f6f3;
+  --gradient-4: #e6f0e8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  --bg-primary:   #171717;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary:  #2a2a2a;
+  --bg-nav:       rgba(23, 23, 23, 0.88);
+
+  --text-primary:   #f0ede6;
+  --text-secondary: #a8b89e;
+  --text-muted:     #909f86;
+  --border-color:   #2f2f2f;
+
+  --accent:        #34d399;
+  --accent-hover:  #6ee7b7;
+  --accent-bg:     rgba(52, 211, 153, 0.10);
+  --accent-border: rgba(52, 211, 153, 0.20);
+  --accent-glow:   rgba(52, 211, 153, 0.12);
+
+  --btn-primary-bg:    #059669;
+  --btn-primary-hover: #047857;
+  --btn-primary-text:  #ffffff;
+
+  --skeleton-base:  #1e1e1e;
+  --skeleton-shine: #2a2a2a;
+  --pattern-color:  rgba(52, 211, 153, 0.04);
+
+  --gradient-1: #171717;
+  --gradient-2: #1e1e1e;
+  --gradient-3: #171717;
+  --gradient-4: #172320;
+}
+
+/* ── Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: var(--font-body), system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), serif;
+}
+
+/* ── Focus Ring ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── Skip Link ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  padding: 12px 24px;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-radius: 0 0 12px 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Screen Reader Only ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Animated Background ── */
+.animated-gradient {
+  background: linear-gradient(
+    -45deg,
+    var(--gradient-1),
+    var(--gradient-2),
+    var(--gradient-3),
+    var(--gradient-4)
+  );
+  background-size: 400% 400%;
+  animation: gradient 20s ease infinite;
+}
+
+@keyframes gradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Leaf Pattern Texture ── */
+.pattern-leaves {
+  background-image:
+    radial-gradient(ellipse 8px 12px at 12px 12px, var(--pattern-color) 0%, transparent 70%),
+    radial-gradient(ellipse 6px 10px at 36px 28px, var(--pattern-color) 0%, transparent 70%),
+    radial-gradient(ellipse 7px 11px at 24px 44px, var(--pattern-color) 0%, transparent 70%);
+  background-size: 48px 56px;
+}
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 56px;
+  background-color: var(--bg-nav);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ── Garden Bed Card ── */
+.garden-bed {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.garden-bed:hover,
+.garden-bed:focus-within {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px var(--accent-border);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.btn-primary:hover  { background-color: var(--btn-primary-hover); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.btn-secondary:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--accent-border);
+}
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.btn-ghost:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ── Form Inputs ── */
+.input-field {
+  width: 100%;
+  padding: 14px 18px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--accent-border);
+  border-radius: 12px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.input-field::placeholder { color: var(--text-muted); }
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Native select chevron */
+.select-field {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23516247' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 44px;
+  cursor: pointer;
+}
+.dark .select-field {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23909f86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ── Error Banner ── */
+.alert-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 18px;
+  background-color: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+.dark .alert-error {
+  background-color: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+/* ── Garden Divider ── */
+.garden-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-color),
+    var(--accent-border),
+    var(--border-color),
+    transparent
+  );
+  margin: 2rem 0;
+}
+
+/* ── Skeleton Loading ── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ── Spinner ── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ── Poem line fade-in ── */
+@keyframes lineAppear {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.poem-line-appear {
+  animation: lineAppear 0.35s ease-out forwards;
+}
+
+/* ── FadeInUp ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+.animate-fade-in-up-d1 { animation: fadeInUp 0.5s ease-out 0.1s forwards; opacity: 0; }
+.animate-fade-in-up-d2 { animation: fadeInUp 0.5s ease-out 0.2s forwards; opacity: 0; }
+.animate-fade-in-up-d3 { animation: fadeInUp 0.5s ease-out 0.3s forwards; opacity: 0; }
+
+/* ── Theme toggle icon visibility ── */
+.theme-icon-sun,
+.theme-icon-moon {
+  display: none;
+}
+.dark  .theme-icon-sun  { display: inline-flex; }
+.light .theme-icon-moon { display: inline-flex; }
+
+/* ── Poem page style info disclosure ── */
+details.style-info summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.style-info summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ── About page FAQ ── */
+details.faq-item {
+  border-bottom: 1px solid var(--border-color);
+}
+details.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 20px 0;
+  font-family: var(--font-display), serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+details.faq-item summary::-webkit-details-marker { display: none; }
+details.faq-item summary .faq-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+details.faq-item[open] summary .faq-chevron {
+  transform: rotate(180deg);
+}
+details.faq-item .faq-content {
+  padding: 0 0 20px 0;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
