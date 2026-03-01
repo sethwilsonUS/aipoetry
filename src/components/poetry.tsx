@@ -1,90 +1,61 @@
-import { Button } from '@/components/ui/button';
-import { PopoverTrigger, PopoverClose, PopoverContent, Popover } from '@/components/ui/popover';
 import { IPoetry } from '@/types/poetry';
 
-const Poetry: React.FC<IPoetry> = (props) => {
+export default function Poetry({ title, lines, styleName, styleExplanation }: IPoetry) {
   return (
-    <div className='w-full p-4 lg:p-12 bg-white dark:bg-gray-900'>
-      <article className='prose prose-gray max-w-3xl mx-auto dark:prose-invert'>
-        <div className='flex items-center'>
-          <h1 className='text-4xl font-bold tracking-tight lg:text-5xl pr-2'>{props.title}</h1>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className='rounded-full' size='icon' variant='ghost'>
-                <InfoIcon />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-80 ml-2'>
-              <div className='grid gap-4'>
-                <div className='space-y-2'>
-                  <div className='flex justify-between'>
-                    <h4 className='font-medium leading-none'>{props.styleName}</h4>
-                    <PopoverClose asChild>
-                      <button className='rounded-sm'>
-                        <XIcon />
-                      </button>
-                    </PopoverClose>
-                  </div>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>
-                    {props.styleExplanation}
-                  </p>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-        <br />
-        <div className='space-y-4'>
-          {props.lines.map((line, index) => (
-            <p key={index}>{line}</p>
-          ))}
-        </div>
-      </article>
-    </div>
-  );
-};
-
-function InfoIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      className='w-4 h-4'
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
+    <article
+      className='max-w-2xl mx-auto px-6 py-12 sm:py-16'
+      aria-labelledby='poem-title'
     >
-      <circle cx='12' cy='12' r='10' />
-      <path d='M12 16v-4' />
-      <path d='M12 8h.01' />
-    </svg>
+      {/* Title */}
+      <header className='mb-10'>
+        <h1
+          id='poem-title'
+          className='text-4xl sm:text-5xl font-bold leading-tight text-[var(--text-primary)] mb-4'
+          style={{ fontFamily: 'var(--font-display), serif' }}
+        >
+          {title}
+        </h1>
+
+        {/* Style info as native disclosure */}
+        <details className='style-info group'>
+          <summary
+            className='inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150'
+            aria-label={`About the ${styleName} form`}
+          >
+            <span
+              className='italic'
+              style={{ fontFamily: 'var(--font-display), serif' }}
+            >
+              {styleName}
+            </span>
+            <svg className='w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-180' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+              <path d='m6 9 6 6 6-6' />
+            </svg>
+          </summary>
+          <div className='mt-3 p-4 garden-bed text-sm text-[var(--text-secondary)] leading-relaxed max-w-prose'>
+            {styleExplanation}
+          </div>
+        </details>
+      </header>
+
+      <hr className='garden-divider' />
+
+      {/* Poem lines */}
+      <div
+        className='space-y-1.5'
+        aria-label='Poem text'
+        role='region'
+      >
+        {lines.map((line, index) => (
+          <p
+            key={index}
+            className='text-lg sm:text-xl leading-relaxed text-[var(--text-primary)]'
+            style={{ fontFamily: 'var(--font-display), serif' }}
+          >
+            {line || '\u00A0'}
+          </p>
+        ))}
+      </div>
+    </article>
   );
 }
-
-function XIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      className='w-4 h-4'
-      xmlns='http://www.w3.org/2000/svg'
-      width='24'
-      height='24'
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M18 6 6 18' />
-      <path d='m6 6 12 12' />
-    </svg>
-  );
-}
-
-export default Poetry;

@@ -1,60 +1,76 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+const FAQ = [
+  {
+    question: 'What is Infinite Poetry?',
+    answer:
+      'Infinite Poetry is an experiment in AI-generated verse. Give it a topic and a poetic form, and it will generate a poem in that tradition using Claude, Anthropic\'s large language model.',
+  },
+  {
+    question: 'Why AI poetry?',
+    answer:
+      'Let me be crystal clear from the outset. I do not want this tool to replace flesh-and-blood poets, nor do I think it ever could. Have you seen some of the poems this thing dreams up? Instead, I want to use this as a learning lab to discover more about poetry and about AI itself. Can AI teach us anything about existing verse forms? The very AI quirks that aggravate the mainstream may very well show us something new and interesting about poetry. On the flip side, poetry requires an immense level of creativity, lateral thinking, and diction. AI can only achieve simulacra of those things—but can we learn something by watching it try?',
+  },
+  {
+    question: 'Why only five poems per hour?',
+    answer:
+      'Those of you using the free tier of LLMs may be surprised to learn that running them costs real money. Someone, even if it\'s not you, pays for these computations. In this case, that someone is me—and since this is a hobby project, I keep the rate modest.',
+  },
+  {
+    question: 'My poem\'s got gibberish in it!',
+    answer:
+      'I am constantly tweaking the model settings, including temperature, which controls how "creative" or "experimental" the model is allowed to be. I err on the side of giving the model more leeway, which means occasional lapses. Have a good laugh and try another one.',
+  },
+  {
+    question: 'I want to get involved!',
+    answer:
+      'I would love that. For ideas, criticism, and kudos, find me on LinkedIn. I especially love hearing from other literary types. For developers, feel free to clone the GitHub repository and contribute.',
+  },
+  {
+    question: 'About the Author',
+    answer:
+      'Hi, I\'m Seth Wilson! I\'m a legally blind software developer living in Tyler, Texas. I\'ve been working in tech for about seven years. Before that I lived in the world of academia, earning an MSt in Medieval History from Oxford University in 2006 and an MA in English from UT Tyler in 2016. I live at the intersection of the arts and sciences: jack of all trades, master of none.',
+  },
+];
 
-const About: React.FC = () => {
+export default function AboutPage() {
   return (
-    <div className='w-full p-4 lg:p-12 bg-white dark:bg-gray-900'>
-      <article className='prose prose-gray max-w-3xl mx-auto dark:prose-invert'>
-        <h1 className='text-4xl font-bold tracking-tight lg:text-5xl pr-2'>About Infinite Poetry</h1>
-        <br />
-        <p>Everything you wanted to know about Infinite Poetry--but were afraid to ask!</p>
-        <br />
-        <hr />
-        <Accordion type='single' collapsible>
-          <AccordionItem value='item-1'>
-            <AccordionTrigger>What is Infinite Poetry?</AccordionTrigger>
-            <AccordionContent>
-              Infinite Poetry uses AI (currently ChatGPT 4o) togenerate a new AI poem, on a random topic, in a random style, every hour.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value='item-2'>
-            <AccordionTrigger>Why AI poetry?</AccordionTrigger>
-            <AccordionContent>
-              Let me be crystal clear from the outset. I do not want this tool to replace flesh-and-blood poets, nor do I think it ever could. Have you seen some of the poems this thing dreams up? Instead, I want to use this as a learning lab to discover more about poetry and about AI itself. First, can AI teach us anything about existing verse forms? The very AI quirks that aggravate the mainstream may very well show us something new and interesting about poetry. Or they may not. On the flip side, poetry requires an immense level of creativity, lateral thinking, and diction. AI can only achieve simulacra of those things, but can we learn anything about how AI attempts to do this by analyzing its poetry?
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value='item-3'>
-            <AccordionTrigger>Why only five poems per hour?</AccordionTrigger>
-            <AccordionContent>
-              Those of you using the free version of ChatGPT or other LLMs may be surprised to learn that using LLMs cost money. Someone, even if it&apos;s not you, is paying for these intensive computations. In this case, that someone is me, and since this is only a hobby project for now, I don’t want to invest too heavily.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value='item-4'>
-            <AccordionTrigger>My poem&apos;s got gibberish in it!</AccordionTrigger>
-            <AccordionContent>
-              I am constantly tweaking various settings related to the model. In particular, I&apos;m experimenting with the temperature, which dictates how &quot;creative&quot; or &quot;experimental&quot; the model is allowed to be. For now, I err on the side of giving the model more leeway, which means these lapses will happen from time to time. Just have a good laugh and wait for the next poem.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value='item-5'>
-            <AccordionTrigger>I want to get involved!</AccordionTrigger>
-            <AccordionContent>
-              Cool! I would love for others to get involved in this project. For general ideas, criticism, kudos, and so forth, please see my LinkedIn profile and get in touch. I&apos;d especially love hearing from other literary types with cool ideas. For the developers among you, feel free to clone the GitHub repository and contribute some code.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value='item-6'>
-            <AccordionTrigger>About the Author</AccordionTrigger>
-            <AccordionContent>
-              Hi, I’m Seth Wilson! I&apos;m a legally blind software developer living in Tyler Texas. I’ve been working in the tech industry for around 7 years now, if you start the clock when I enrolled in an MS in Computer Science at the University of Texas, Tyler. Before that I lived in the world of academia, earning an Ms.C. in Medieval History from Oxford University in 2006 and an MA in English from UT Tyler in 2016. So I live at the intersection of the arts and sciences: jack of all trades, master of none.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </article>
+    <div className='max-w-3xl mx-auto px-4 py-12'>
+      <header className='mb-10'>
+        <h1
+          className='text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-3'
+          style={{ fontFamily: 'var(--font-display), serif' }}
+        >
+          About
+        </h1>
+        <p className='text-[var(--text-secondary)] leading-relaxed'>
+          Everything you wanted to know about Infinite Poetry—but were afraid to ask.
+        </p>
+      </header>
+
+      <hr className='garden-divider' />
+
+      <div role='list'>
+        {FAQ.map(({ question, answer }) => (
+          <details key={question} className='faq-item' role='listitem'>
+            <summary>
+              {question}
+              <svg
+                className='faq-chevron w-5 h-5'
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth={2}
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                aria-hidden='true'
+              >
+                <path d='m6 9 6 6 6-6' />
+              </svg>
+            </summary>
+            <div className='faq-content'>{answer}</div>
+          </details>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default About;
+}
