@@ -16,7 +16,11 @@ export async function generateMetadata({
   }
 
   if (!poem || !poem.title) {
-    return { title: 'Poem — Infinite Poetry' };
+    return {
+      title: 'Poem — Infinite Poetry',
+      openGraph: { title: 'Poem — Infinite Poetry' },
+      twitter: { title: 'Poem — Infinite Poetry' },
+    };
   }
 
   const previewText = poem.lines.slice(0, 2).filter(Boolean).join(' / ');
