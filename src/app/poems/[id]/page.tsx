@@ -5,6 +5,7 @@ import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
 import Poetry from '@/components/poetry';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PoemPage({ params }: { params: { id: string } }) {
   const poem = useQuery(api.poems.getById, {
@@ -14,7 +15,7 @@ export default function PoemPage({ params }: { params: { id: string } }) {
   // Loading — initial fetch
   if (poem === undefined) {
     return (
-      <div className='max-w-2xl mx-auto px-6 py-16'>
+      <div className='max-w-2xl mx-auto px-6 py-16' aria-busy='true' aria-label='Loading poem'>
         <div className='space-y-4'>
           <div className='skeleton h-12 w-3/4 rounded-lg' />
           <div className='skeleton h-4 w-24 rounded' />
@@ -75,9 +76,11 @@ export default function PoemPage({ params }: { params: { id: string } }) {
       <article
         className='max-w-2xl mx-auto px-6 py-12 sm:py-16'
         aria-label='Poem being generated'
-        aria-live='polite'
-        aria-atomic='false'
       >
+        {/* Single live announcement — avoids reading every streaming line aloud */}
+        <p role='status' className='sr-only'>
+          Writing your poem, please wait…
+        </p>
         <header className='mb-10'>
           <h1
             className='text-4xl sm:text-5xl font-bold leading-tight text-[var(--text-primary)] mb-2'
@@ -132,11 +135,67 @@ export default function PoemPage({ params }: { params: { id: string } }) {
 
   // Complete
   return (
-    <Poetry
-      title={poem.title}
-      lines={poem.lines}
-      styleName={poem.styleName}
-      styleExplanation={poem.styleExplanation}
-    />
+    <>
+      <Poetry
+        title={poem.title}
+        lines={poem.lines}
+        styleName={poem.styleName}
+        styleExplanation={poem.styleExplanation}
+      />
+      <PoemImage
+        imageStatus={poem.imageStatus}
+        imageUrl={poem.imageUrl ?? null}
+        poemTitle={poem.title}
+      />
+    </>
   );
+}
+
+function PoemImage({
+  imageStatus,
+  imageUrl,
+  poemTitle,
+}: {
+  imageStatus?: string;
+  imageUrl: string | null;
+  poemTitle: string;
+}) {
+  if (!imageStatus || imageStatus === 'error') return null;
+
+  if (imageStatus === 'pending' || imageStatus === 'generating') {
+    return (
+      <div className='max-w-2xl mx-auto px-6 pb-16' aria-busy='true' aria-label='Generating illustration'>
+        <hr className='garden-divider mb-10' />
+        <div className='space-y-3'>
+          <div className='skeleton h-4 w-32 rounded' />
+          <div className='skeleton w-full rounded-xl' style={{ aspectRatio: '4/3' }} />
+        </div>
+        <p className='text-xs text-[var(--text-muted)] mt-3 italic text-center'>
+          Painting your illustration…
+        </p>
+      </div>
+    );
+  }
+
+  if (imageStatus === 'complete' && imageUrl) {
+    return (
+      <div className='max-w-2xl mx-auto px-6 pb-16'>
+        <hr className='garden-divider mb-10' />
+        <figure>
+          <div className='relative w-full overflow-hidden rounded-xl border border-[var(--border-color)]'>
+            <Image
+              src={imageUrl}
+              alt={`Illustration for "${poemTitle}"`}
+              width={1024}
+              height={768}
+              className='w-full h-auto'
+              unoptimized
+            />
+          </div>
+        </figure>
+      </div>
+    );
+  }
+
+  return null;
 }

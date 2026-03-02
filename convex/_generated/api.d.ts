@@ -9,11 +9,12 @@
  */
 
 import type * as generate from "../generate.js";
+import type * as generateImage from "../generateImage.js";
+import type * as imageStyles from "../imageStyles.js";
 import type * as initPoem from "../initPoem.js";
 import type * as poems from "../poems.js";
 import type * as rateLimiter from "../rateLimiter.js";
-import type * as seed from "../seed.js";
-import type * as styles from "../styles.js";
+import type * as stylesConfig from "../stylesConfig.js";
 import type * as topics from "../topics.js";
 
 import type {
@@ -24,11 +25,12 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   generate: typeof generate;
+  generateImage: typeof generateImage;
+  imageStyles: typeof imageStyles;
   initPoem: typeof initPoem;
   poems: typeof poems;
   rateLimiter: typeof rateLimiter;
-  seed: typeof seed;
-  styles: typeof styles;
+  stylesConfig: typeof stylesConfig;
   topics: typeof topics;
 }>;
 

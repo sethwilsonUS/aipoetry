@@ -1,25 +1,18 @@
-import { query, internalMutation } from './_generated/server';
+import { query, internalMutation, internalQuery } from './_generated/server';
 import { v } from 'convex/values';
+import { STYLES } from './stylesConfig';
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
     const poems = await ctx.db.query('poems').collect();
-
-    const poemsWithStyles = await Promise.all(
-      poems
-        .filter((poem) => poem.isPublic !== false)
-        .map(async (poem) => {
-          const style = await ctx.db.get(poem.styleId);
-          return {
-            id: poem._id,
-            title: poem.title,
-            styleName: style?.name ?? 'Unknown',
-          };
-        })
-    );
-
-    return poemsWithStyles;
+    return poems
+      .filter((poem) => poem.isPublic !== false)
+      .map((poem) => ({
+        id: poem._id,
+        title: poem.title,
+        styleName: poem.styleName,
+      }));
   },
 });
 
@@ -39,16 +32,28 @@ export const getById = query({
     const poem = await ctx.db.get(args.id);
     if (!poem) return null;
 
-    const style = await ctx.db.get(poem.styleId);
+    const styleConfig = STYLES.find((s) => s.name === poem.styleName);
+    const imageUrl =
+      poem.imageStorageId ? await ctx.storage.getUrl(poem.imageStorageId) : null;
 
     return {
       ...poem,
-      styleName: style?.name ?? 'Unknown',
-      styleExplanation: style?.userExplanation ?? '',
+      styleExplanation: styleConfig?.userExplanation ?? '',
+      imageUrl,
     };
   },
 });
 
+// Internal query used by generateImage action to fetch poem + topic name.
+export const getForImageGen = internalQuery({
+  args: { id: v.id('poems') },
+  handler: async (ctx, args) => {
+    const poem = await ctx.db.get(args.id);
+    if (!poem) return null;
+    const topic = await ctx.db.get(poem.topicId);
+    return { ...poem, topicName: topic?.name ?? '' };
+  },
+});
 
 export const updateContent = internalMutation({
   args: {
@@ -67,5 +72,39 @@ export const setError = internalMutation({
   args: { id: v.id('poems') },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.id, { status: 'error' });
+  },
+});
+
+export const updateImageStatus = internalMutation({
+  args: {
+    id: v.id('poems'),
+    imageStatus: v.union(
+      v.literal('pending'),
+      v.literal('generating'),
+      v.literal('complete'),
+      v.literal('error'),
+    ),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, { imageStatus: args.imageStatus });
+  },
+});
+
+export const updateImage = internalMutation({
+  args: {
+    id: v.id('poems'),
+    imageStorageId: v.id('_storage'),
+    imageStatus: v.union(
+      v.literal('pending'),
+      v.literal('generating'),
+      v.literal('complete'),
+      v.literal('error'),
+    ),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      imageStorageId: args.imageStorageId,
+      imageStatus: args.imageStatus,
+    });
   },
 });

@@ -1,52 +1,58 @@
 'use client';
 
+import { useId, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-
-interface Style {
-  _id: string;
-  name: string;
-  description: string;
-}
+import { StyleConfig } from '../../convex/stylesConfig';
+import { IMAGE_STYLES } from '../../convex/imageStyles';
 
 interface PoemId {
   id: string;
 }
 
 interface UserGenProps {
-  styles: Style[];
+  styles: StyleConfig[];
   poemIds: PoemId[];
 }
 
 export default function UserGen({ styles, poemIds }: UserGenProps) {
   const router = useRouter();
+  const initAndSchedule = useMutation(api.initPoem.initAndSchedule);
+
+  // Controlled state for every form field — no FormData reads.
+  const [topic, setTopic] = useState('');
+  const [styleName, setStyleName] = useState('');
+  const [artStyle, setArtStyle] = useState('none');
+  const [isPublic, setIsPublic] = useState(false);
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isPublic, setIsPublic] = useState(false);
 
-  const initAndSchedule = useMutation(api.initPoem.initAndSchedule);
+  // useId() produces stable, unique IDs that are safe across SSR + hydration.
+  const topicId = useId();
+  const styleId = useId();
+  const artStyleId = useId();
+  const errorId = useId();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError('');
-    setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
-    const topic = formData.get('topic') as string;
-    const style = formData.get('style') as string;
-
-    if (!topic.trim() || !style) {
-      setFormError('Please fill in both fields.');
-      setIsSubmitting(false);
+    if (!topic.trim()) {
+      setFormError('Please enter a topic.');
+      return;
+    }
+    if (!styleName) {
+      setFormError('Please select a poetic form.');
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const result = await initAndSchedule({
         topic: topic.trim(),
-        styleName: style,
+        styleName,
+        artStyle,
         identifier: 'anonymous',
         isPublic,
       });
@@ -82,94 +88,152 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
             Generate a Poem
           </h1>
           <p className='text-[var(--text-secondary)] text-sm leading-relaxed'>
-            Choose a topic and a poetic form. All generated poems are public.
+            Choose a topic and a poetic form. Private by default — check the box below to share in
+            the Archive.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className='space-y-5'>
-          {/* Topic */}
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          aria-describedby={formError ? errorId : undefined}
+          className='space-y-5'
+        >
+          {/* ── Topic ── */}
           <div className='space-y-2'>
             <label
-              htmlFor='topic-input'
+              htmlFor={topicId}
               className='block text-sm font-semibold text-[var(--text-primary)]'
             >
               Topic
             </label>
             <input
-              id='topic-input'
+              id={topicId}
               type='text'
-              name='topic'
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
               placeholder='e.g. coffee, wild horses, Oxford commas…'
               required
+              aria-required='true'
+              aria-invalid={formError && !topic.trim() ? 'true' : 'false'}
               disabled={isSubmitting}
               className='input-field'
-              aria-describedby='topic-hint'
             />
-            <p id='topic-hint' className='sr-only'>
-              Enter the topic you&apos;d like your poem to be about
-            </p>
           </div>
 
-          {/* Style */}
+          {/* ── Poetic Form ── */}
           <div className='space-y-2'>
             <label
-              htmlFor='style-select'
+              htmlFor={styleId}
               className='block text-sm font-semibold text-[var(--text-primary)]'
             >
               Poetic Form
             </label>
             <select
-              id='style-select'
-              name='style'
+              id={styleId}
+              value={styleName}
+              onChange={(e) => setStyleName(e.target.value)}
               required
+              aria-required='true'
+              aria-invalid={formError && !styleName ? 'true' : 'false'}
               disabled={isSubmitting}
               className='input-field select-field'
-              defaultValue=''
-              aria-describedby='style-hint'
             >
               <option value='' disabled>
                 Select a form…
               </option>
-              {styles.map((style) => (
-                <option key={style._id} value={style.name}>
-                  {style.name}
+              {styles.map((s) => (
+                <option key={s.name} value={s.name}>
+                  {s.name}
                 </option>
               ))}
             </select>
-            <p id='style-hint' className='sr-only'>
-              Choose the poetic form for your generated poem
-            </p>
           </div>
 
-          {/* Archive opt-in */}
-          <label className='flex items-start gap-3 cursor-pointer group'>
-            <input
-              type='checkbox'
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
+          {/* ── Illustration Style ── */}
+          <div className='space-y-2'>
+            <label
+              htmlFor={artStyleId}
+              className='block text-sm font-semibold text-[var(--text-primary)]'
+            >
+              Illustration Style
+            </label>
+            <select
+              id={artStyleId}
+              value={artStyle}
+              onChange={(e) => setArtStyle(e.target.value)}
               disabled={isSubmitting}
-              className='mt-0.5 w-4 h-4 rounded border-2 border-[var(--accent-border)] accent-[var(--accent)] cursor-pointer shrink-0'
-              aria-describedby='public-hint'
-            />
+              className='input-field select-field'
+            >
+              {IMAGE_STYLES.map((s) => (
+                <option key={s.name} value={s.name}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* ── Public toggle ──
+               Uses <button role="checkbox"> so Tab focus works on macOS by default.
+               Native <input type="checkbox"> is excluded from the macOS Tab sequence
+               unless the user has "Full Keyboard Access" enabled in System Preferences.
+               Focus styles live in .toggle-btn in globals.css — not inline Tailwind —
+               so they can't be overridden by specificity collisions. */}
+          <button
+            type='button'
+            role='checkbox'
+            aria-checked={isPublic}
+            onClick={() => setIsPublic((v) => !v)}
+            disabled={isSubmitting}
+            className='toggle-btn'
+          >
+            <span
+              className='toggle-indicator'
+              data-checked={String(isPublic)}
+              aria-hidden='true'
+            >
+              {isPublic && (
+                <svg viewBox='0 0 10 10' fill='none' aria-hidden='true' style={{ width: 10, height: 10 }}>
+                  <path
+                    d='M1.5 5l2.5 2.5 4.5-4.5'
+                    stroke='white'
+                    strokeWidth='1.5'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              )}
+            </span>
             <span className='text-sm leading-snug'>
               <span className='font-semibold text-[var(--text-primary)]'>
                 Add to public archive
               </span>
               <span className='block text-[var(--text-muted)] mt-0.5'>
-                By default your poem is private — only accessible via its direct link.
-                Check this to share it in the Archive.
+                By default your poem is private — only accessible via its direct link. Check this
+                to share it in the Archive.
               </span>
             </span>
-          </label>
-          <p id='public-hint' className='sr-only'>
-            When unchecked, your poem will only be accessible via its direct URL and will not
-            appear in the public archive.
-          </p>
+          </button>
 
-          {/* Error */}
+          {/* ── Validation error ── */}
           {formError && (
-            <div className='alert-error' role='alert' aria-live='polite'>
-              <svg className='w-5 h-5 shrink-0 mt-0.5' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+            <div
+              id={errorId}
+              role='alert'
+              aria-live='assertive'
+              className='alert-error'
+            >
+              <svg
+                className='w-5 h-5 shrink-0 mt-0.5'
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth={2}
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                aria-hidden='true'
+              >
                 <circle cx='12' cy='12' r='10' />
                 <path d='M12 8v4M12 16h.01' />
               </svg>
@@ -177,7 +241,7 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
             </div>
           )}
 
-          {/* Submit */}
+          {/* ── Submit ── */}
           <button
             type='submit'
             className='btn-primary'
@@ -197,8 +261,8 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
             )}
           </button>
 
-          {/* Divider */}
-          <div className='flex items-center gap-3 py-1'>
+          {/* ── Divider ── */}
+          <div className='flex items-center gap-3 py-1' aria-hidden='true'>
             <hr className='flex-1 border-[var(--border-color)]' />
             <span className='text-xs text-[var(--text-muted)] font-medium uppercase tracking-widest'>
               or
@@ -206,20 +270,17 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
             <hr className='flex-1 border-[var(--border-color)]' />
           </div>
 
-          {/* Random */}
+          {/* ── Random ── */}
           <button
             type='button'
             className='btn-secondary'
             onClick={showRandomPoem}
             disabled={isSubmitting || poemIds.length === 0}
-            aria-describedby='plucky-hint'
+            aria-label='Navigate to a randomly selected poem from the archive'
           >
             <DiceIcon className='w-4 h-4' aria-hidden='true' />
             I&apos;m Feeling Plucky!
           </button>
-          <p id='plucky-hint' className='sr-only'>
-            Navigate to a randomly selected poem from the archive
-          </p>
         </form>
       </div>
     </section>
@@ -228,7 +289,16 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
 
 function SpinnerIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+    <svg
+      className={className}
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={2}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    >
       <path d='M21 12a9 9 0 1 1-6.219-8.56' />
     </svg>
   );
@@ -236,7 +306,16 @@ function SpinnerIcon({ className }: { className?: string }) {
 
 function PenIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+    <svg
+      className={className}
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={2}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    >
       <path d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z' />
     </svg>
   );
@@ -244,7 +323,16 @@ function PenIcon({ className }: { className?: string }) {
 
 function DiceIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+    <svg
+      className={className}
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={2}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    >
       <rect width='18' height='18' x='3' y='3' rx='2' ry='2' />
       <path d='M16 8h.01M8 8h.01M12 12h.01M16 16h.01M8 16h.01' />
     </svg>

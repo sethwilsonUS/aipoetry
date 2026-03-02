@@ -3,12 +3,12 @@
 import { useTheme } from './theme-provider';
 
 export default function ThemeToggle() {
-  const { toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button
       onClick={toggleTheme}
-      aria-label='Toggle light/dark theme'
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       className='btn-ghost w-9 h-9 p-0 rounded-lg'
     >
       {/* Sun — visible in dark mode */}

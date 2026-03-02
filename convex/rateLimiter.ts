@@ -2,7 +2,11 @@ import { mutation } from './_generated/server';
 import { v } from 'convex/values';
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const MAX_REQUESTS_PER_WINDOW = 5;
+// Override via RATE_LIMIT_MAX env var in the Convex dashboard.
+// Set a high value (e.g. 1000) in dev, leave unset in prod to keep the default of 5.
+const MAX_REQUESTS_PER_WINDOW = process.env.RATE_LIMIT_MAX
+  ? parseInt(process.env.RATE_LIMIT_MAX, 10)
+  : 5;
 
 export const checkRateLimit = mutation({
   args: { identifier: v.string() },
