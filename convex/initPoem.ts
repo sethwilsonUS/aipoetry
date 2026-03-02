@@ -29,7 +29,7 @@ export const initAndSchedule = mutation({
       return {
         success: false,
         error:
-          "You may generate a maximum of five poems every hour. If you're feeling plucky, you can grab a random poem (or three) while you wait!",
+          "You may generate a maximum of five poems per day. If you're feeling plucky, you can grab a random poem (or three) while you wait!",
       };
     }
 
