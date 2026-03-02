@@ -6,6 +6,9 @@ export default function Poetry({ title, lines, styleName, styleExplanation }: IP
       className='max-w-2xl mx-auto px-6 py-12 sm:py-16'
       aria-labelledby='poem-title'
     >
+      {/* Announces completion to screen readers when transitioning from the generating state */}
+      <p role='status' className='sr-only'>Poem complete.</p>
+
       {/* Title */}
       <header className='mb-10'>
         <h1

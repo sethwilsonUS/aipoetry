@@ -48,9 +48,9 @@ export default function AboutPage() {
 
       <hr className='garden-divider' />
 
-      <div role='list'>
+      <div>
         {FAQ.map(({ question, answer }) => (
-          <details key={question} className='faq-item' role='listitem'>
+          <details key={question} className='faq-item'>
             <summary>
               {question}
               <svg

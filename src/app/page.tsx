@@ -2,10 +2,10 @@
 
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
+import { STYLES } from '../../convex/stylesConfig';
 import UserGen from '@/components/usergen';
 
 export default function Home() {
-  const styles = useQuery(api.styles.list);
   const poemIds = useQuery(api.poems.listIds);
 
   return (
@@ -26,8 +26,8 @@ export default function Home() {
 
         {/* Form */}
         <div className='animate-fade-in-up-d1'>
-          {styles && poemIds ? (
-            <UserGen styles={styles} poemIds={poemIds} />
+          {poemIds ? (
+            <UserGen styles={STYLES} poemIds={poemIds} />
           ) : (
             <div className='garden-bed p-8 max-w-lg mx-auto space-y-5'>
               <div className='text-center space-y-3 mb-8'>
