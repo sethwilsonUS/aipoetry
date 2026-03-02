@@ -16,7 +16,7 @@ export default function Navbar() {
   return (
     <header role='banner'>
       <nav className='navbar' aria-label='Main navigation'>
-        <div className='h-full max-w-5xl mx-auto px-4 flex items-center justify-between gap-4'>
+        <div className='h-full max-w-5xl mx-auto px-4 flex items-center justify-between gap-2 sm:gap-4'>
 
           {/* Brand */}
           <Link
@@ -26,7 +26,7 @@ export default function Navbar() {
           >
             <LeafIcon className='w-5 h-5 text-[var(--accent)]' aria-hidden='true' />
             <span
-              className='font-semibold text-base tracking-tight'
+              className='hidden sm:inline font-semibold text-base tracking-tight'
               style={{ fontFamily: 'var(--font-display), serif' }}
             >
               Infinite Poetry
@@ -42,7 +42,7 @@ export default function Navbar() {
                   <Link
                     href={href}
                     className={[
-                      'px-3 py-1.5 rounded-lg text-sm font-medium no-underline transition-colors duration-150',
+                      'px-2 sm:px-3 py-1.5 rounded-lg text-sm font-medium no-underline transition-colors duration-150',
                       isActive
                         ? 'bg-[var(--accent-bg)] text-[var(--accent)]'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]',
@@ -58,24 +58,28 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className='flex items-center gap-1 shrink-0'>
-            <a
-              href='https://github.com/sethwilsonUS/aipoetry'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='btn-ghost w-9 h-9 p-0 rounded-lg'
-              aria-label='View source on GitHub'
-            >
-              <GitHubIcon className='w-5 h-5' aria-hidden='true' />
-            </a>
-            <a
-              href='https://artsai.substack.com/'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='btn-ghost w-9 h-9 p-0 rounded-lg'
-              aria-label='Subscribe to the newsletter'
-            >
-              <MailIcon className='w-5 h-5' aria-hidden='true' />
-            </a>
+            <div className='hidden sm:flex'>
+              <a
+                href='https://github.com/sethwilsonUS/aipoetry'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='btn-ghost w-9 h-9 p-0 rounded-lg'
+                aria-label='View source on GitHub'
+              >
+                <GitHubIcon className='w-5 h-5' aria-hidden='true' />
+              </a>
+            </div>
+            <div className='hidden sm:flex'>
+              <a
+                href='https://artsai.substack.com/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='btn-ghost w-9 h-9 p-0 rounded-lg'
+                aria-label='Subscribe to the newsletter'
+              >
+                <MailIcon className='w-5 h-5' aria-hidden='true' />
+              </a>
+            </div>
             <ThemeToggle />
           </div>
 
