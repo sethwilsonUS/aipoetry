@@ -14,9 +14,10 @@ interface PoemId {
 interface UserGenProps {
   styles: StyleConfig[];
   poemIds: PoemId[];
+  identifier: string;
 }
 
-export default function UserGen({ styles, poemIds }: UserGenProps) {
+export default function UserGen({ styles, poemIds, identifier }: UserGenProps) {
   const router = useRouter();
   const initAndSchedule = useMutation(api.initPoem.initAndSchedule);
 
@@ -53,7 +54,7 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
         topic: topic.trim(),
         styleName,
         artStyle,
-        identifier: 'anonymous',
+        identifier,
         isPublic,
       });
 
