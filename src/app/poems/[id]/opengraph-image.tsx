@@ -124,16 +124,14 @@ export default async function OgImage({ params }: { params: { id: string } }) {
     );
   }
 
-  // ── Load Fraunces font (WOFF v1 from @fontsource, bundled locally) ─────────
-  // Using a local file avoids the runtime network request and the WOFF2
-  // incompatibility with Satori's font parser.
+  // ── Load Fraunces font ───────────────────────────────────────────────────
+  // Font is committed to public/fonts/ so Vercel always includes it in the
+  // deployment bundle. node_modules paths are NOT reliable on Vercel — the
+  // file tracer only follows static imports, not dynamic readFileSync calls.
   let fontData: ArrayBuffer | undefined;
   try {
-    const fontPath = join(
-      process.cwd(),
-      'node_modules/@fontsource/fraunces/files/fraunces-latin-700-normal.woff',
-    );
-    fontData = readFileSync(fontPath).buffer as ArrayBuffer;
+    fontData = readFileSync(join(process.cwd(), 'public/fonts/Fraunces-Bold.woff'))
+      .buffer as ArrayBuffer;
   } catch {
     // fall back to system serif
   }
