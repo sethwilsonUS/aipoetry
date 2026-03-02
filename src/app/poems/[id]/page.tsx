@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
@@ -163,6 +164,15 @@ function PoemImage({
   poemTitle: string;
   imageDescription?: string;
 }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const openLightbox = () => dialogRef.current?.showModal();
+  const closeLightbox = () => dialogRef.current?.close();
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) closeLightbox();
+  };
+
   if (!imageStatus || imageStatus === 'error') return null;
 
   if (imageStatus === 'pending' || imageStatus === 'generating') {
@@ -186,22 +196,101 @@ function PoemImage({
       <div className='max-w-2xl mx-auto px-6 pb-16'>
         <hr className='garden-divider mb-10' />
         <figure>
-          <div className='relative w-full overflow-hidden rounded-xl border border-[var(--border-color)]'>
+          {/* Thumbnail — clicking opens the lightbox */}
+          <button
+            type='button'
+            onClick={openLightbox}
+            className='relative w-full overflow-hidden rounded-xl border border-[var(--border-color)] block cursor-zoom-in group'
+            aria-label={`View full-size illustration for "${poemTitle}"`}
+          >
             <Image
               src={imageUrl}
               alt={altText}
               width={1024}
               height={768}
-              className='w-full h-auto'
+              className='w-full h-auto transition-opacity duration-200 group-hover:opacity-90'
               unoptimized
             />
-          </div>
+            {/* Expand hint on hover */}
+            <span
+              className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+              aria-hidden='true'
+            >
+              <span className='flex items-center justify-center w-10 h-10 rounded-full bg-black/50'>
+                <svg
+                  width='18'
+                  height='18'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='white'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                >
+                  <polyline points='15 3 21 3 21 9' />
+                  <polyline points='9 21 3 21 3 15' />
+                  <line x1='21' y1='3' x2='14' y2='10' />
+                  <line x1='3' y1='21' x2='10' y2='14' />
+                </svg>
+              </span>
+            </span>
+          </button>
+
           {imageDescription && (
             <figcaption className='mt-3 text-xs text-[var(--text-muted)] italic text-center leading-relaxed'>
               {imageDescription}
             </figcaption>
           )}
         </figure>
+
+        {/* Lightbox dialog — native <dialog> for accessibility */}
+        <dialog
+          ref={dialogRef}
+          onClick={handleBackdropClick}
+          aria-label={`Full-size illustration for "${poemTitle}"`}
+          className='lightbox-dialog'
+        >
+          <div className='relative'>
+            {/* Close button */}
+            <button
+              type='button'
+              onClick={closeLightbox}
+              aria-label='Close lightbox'
+              className='absolute top-3 right-3 z-10 flex items-center justify-center w-9 h-9 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors duration-150 cursor-pointer'
+            >
+              <svg
+                width='16'
+                height='16'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2.5'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                aria-hidden='true'
+              >
+                <path d='M18 6 6 18M6 6l12 12' />
+              </svg>
+            </button>
+
+            {/* Full-size image */}
+            <Image
+              src={imageUrl}
+              alt={altText}
+              width={1024}
+              height={768}
+              className='w-full h-auto block rounded-t-[20px]'
+              unoptimized
+            />
+
+            {/* Caption */}
+            {imageDescription && (
+              <p className='px-5 py-3 text-xs text-[var(--text-muted)] italic text-center leading-relaxed border-t border-[var(--border-color)]'>
+                {imageDescription}
+              </p>
+            )}
+          </div>
+        </dialog>
       </div>
     );
   }
