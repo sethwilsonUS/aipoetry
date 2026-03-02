@@ -33,6 +33,17 @@ export const metadata: Metadata = {
   title: 'Infinite Poetry',
   description: 'AI-generated poems on a variety of topics in a variety of styles.',
   metadataBase: new URL('https://infinitepoetry.ai/'),
+  openGraph: {
+    type: 'website',
+    siteName: 'Infinite Poetry',
+    title: 'Infinite Poetry',
+    description: 'AI-generated poems on a variety of topics in a variety of styles.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Infinite Poetry',
+    description: 'AI-generated poems on a variety of topics in a variety of styles.',
+  },
 };
 
 export default function RootLayout({

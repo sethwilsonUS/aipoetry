@@ -106,6 +106,11 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.0.tgz"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
+"@fontsource/fraunces@^5.2.9":
+  version "5.2.9"
+  resolved "https://registry.npmjs.org/@fontsource/fraunces/-/fraunces-5.2.9.tgz"
+  integrity sha512-XDzuddBtoC7BZgZdBn6b7hsFZY2+V1hgN7yca5fBTKuHjb/lOd45a0Ji8dTUgFhPoL7RdGupo+bC2BFSt6UH8Q==
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.14.tgz"
