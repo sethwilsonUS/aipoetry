@@ -94,6 +94,7 @@ export const updateImage = internalMutation({
   args: {
     id: v.id('poems'),
     imageStorageId: v.id('_storage'),
+    imageDescription: v.optional(v.string()),
     imageStatus: v.union(
       v.literal('pending'),
       v.literal('generating'),
@@ -104,6 +105,7 @@ export const updateImage = internalMutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.id, {
       imageStorageId: args.imageStorageId,
+      imageDescription: args.imageDescription,
       imageStatus: args.imageStatus,
     });
   },

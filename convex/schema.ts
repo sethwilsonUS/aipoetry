@@ -19,6 +19,7 @@ export default defineSchema({
     userId: v.optional(v.string()),
     artStyle: v.optional(v.string()),
     imageStorageId: v.optional(v.id('_storage')),
+    imageDescription: v.optional(v.string()),
     imageStatus: v.optional(
       v.union(
         v.literal('pending'),
