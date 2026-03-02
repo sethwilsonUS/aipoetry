@@ -14,6 +14,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@fontsource/fraunces": "^5.2.9",
     "ai": "^6.0.105",
     "clsx": "^2.1.1",
     "convex": "^1.32.0",
