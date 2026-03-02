@@ -32,7 +32,9 @@ ${poemText}
 Capture the specific imagery, metaphors, and emotional tone of the poem above.
 Unexpected compositional choices, dramatic use of light, color, and form are encouraged.
 Emotionally resonant, even slightly surreal interpretation permitted.
-Museum-quality composition. No text, no typography, no words anywhere in the image.`;
+Museum-quality composition. No text, no typography, no words anywhere in the image.
+
+After generating the image, write exactly one sentence describing what is depicted in it. This sentence will be used as a visible caption and as alt text for accessibility. Start it with "Illustration:".`;
 }
 
 export const runImageGeneration = internalAction({
@@ -69,9 +71,15 @@ export const runImageGeneration = internalAction({
       const blob = new Blob([imageFile.uint8Array.buffer as ArrayBuffer], { type: imageFile.mediaType ?? 'image/png' });
       const storageId = await ctx.storage.store(blob);
 
+      const rawDescription = result.text?.trim() ?? '';
+      const imageDescription = rawDescription.startsWith('Illustration:')
+        ? rawDescription
+        : rawDescription || undefined;
+
       await ctx.runMutation(internal.poems.updateImage, {
         id: args.poemId,
         imageStorageId: storageId,
+        imageDescription,
         imageStatus: 'complete',
       });
     } catch {

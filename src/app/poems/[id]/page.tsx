@@ -146,6 +146,7 @@ export default function PoemPage({ params }: { params: { id: string } }) {
         imageStatus={poem.imageStatus}
         imageUrl={poem.imageUrl ?? null}
         poemTitle={poem.title}
+        imageDescription={poem.imageDescription}
       />
     </>
   );
@@ -155,10 +156,12 @@ function PoemImage({
   imageStatus,
   imageUrl,
   poemTitle,
+  imageDescription,
 }: {
   imageStatus?: string;
   imageUrl: string | null;
   poemTitle: string;
+  imageDescription?: string;
 }) {
   if (!imageStatus || imageStatus === 'error') return null;
 
@@ -178,6 +181,7 @@ function PoemImage({
   }
 
   if (imageStatus === 'complete' && imageUrl) {
+    const altText = imageDescription ?? `Illustration for "${poemTitle}"`;
     return (
       <div className='max-w-2xl mx-auto px-6 pb-16'>
         <hr className='garden-divider mb-10' />
@@ -185,13 +189,18 @@ function PoemImage({
           <div className='relative w-full overflow-hidden rounded-xl border border-[var(--border-color)]'>
             <Image
               src={imageUrl}
-              alt={`Illustration for "${poemTitle}"`}
+              alt={altText}
               width={1024}
               height={768}
               className='w-full h-auto'
               unoptimized
             />
           </div>
+          {imageDescription && (
+            <figcaption className='mt-3 text-xs text-[var(--text-muted)] italic text-center leading-relaxed'>
+              {imageDescription}
+            </figcaption>
+          )}
         </figure>
       </div>
     );
