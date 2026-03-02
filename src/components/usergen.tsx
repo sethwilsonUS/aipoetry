@@ -173,6 +173,30 @@ export default function UserGen({ styles, poemIds }: UserGenProps) {
             </select>
           </div>
 
+          {/* ── Image cost notice ── */}
+          {artStyle !== 'none' && (
+            <div className='alert-image-cost' role='note'>
+              <svg
+                className='w-4 h-4 shrink-0 mt-0.5'
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth={2}
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                aria-hidden='true'
+              >
+                <path d='M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z' />
+                <path d='M12 8v4M12 16h.01' />
+              </svg>
+              <span>
+                Image generation is significantly more expensive than poem generation. Please use it
+                sparingly — this project is self-funded for research purposes.
+              </span>
+            </div>
+          )}
+
           {/* ── Public toggle ──
                Uses <button role="checkbox"> so Tab focus works on macOS by default.
                Native <input type="checkbox"> is excluded from the macOS Tab sequence

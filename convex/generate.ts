@@ -30,7 +30,7 @@ export const runGeneration = internalAction({
 
       const result = streamText({
         model: MODEL,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 800,
         temperature: TEMPERATURE,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: args.prompt }],
