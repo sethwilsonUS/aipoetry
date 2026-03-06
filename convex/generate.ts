@@ -22,7 +22,6 @@ export const runGeneration = internalAction({
   args: {
     poemId: v.id('poems'),
     prompt: v.string(),
-    artStyle: v.string(),
   },
   handler: async (ctx, args) => {
     try {
@@ -58,12 +57,6 @@ export const runGeneration = internalAction({
           lines: finalParsed.lines || [],
           status: 'complete',
         });
-
-        if (args.artStyle !== 'none') {
-          await ctx.scheduler.runAfter(0, internal.generateImage.runImageGeneration, {
-            poemId: args.poemId,
-          });
-        }
       } else {
         await ctx.runMutation(internal.poems.setError, { id: args.poemId });
       }

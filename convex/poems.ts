@@ -1,4 +1,4 @@
-import { query, internalMutation, internalQuery } from './_generated/server';
+import { query, mutation, internalMutation, internalQuery } from './_generated/server';
 import { v } from 'convex/values';
 import { STYLES } from './stylesConfig';
 
@@ -7,7 +7,7 @@ export const list = query({
   handler: async (ctx) => {
     const poems = await ctx.db.query('poems').collect();
     return poems
-      .filter((poem) => poem.isPublic !== false)
+      .filter((poem) => poem.isPublic === true)
       .map((poem) => ({
         id: poem._id,
         title: poem.title,
@@ -21,7 +21,7 @@ export const listIds = query({
   handler: async (ctx) => {
     const poems = await ctx.db.query('poems').collect();
     return poems
-      .filter((poem) => poem.isPublic !== false)
+      .filter((poem) => poem.isPublic === true)
       .map((poem) => ({ id: poem._id }));
   },
 });
@@ -35,12 +35,30 @@ export const getById = query({
     const styleConfig = STYLES.find((s) => s.name === poem.styleName);
     const imageUrl =
       poem.imageStorageId ? await ctx.storage.getUrl(poem.imageStorageId) : null;
+    const topic = await ctx.db.get(poem.topicId);
 
     return {
       ...poem,
+      topicName: topic?.name ?? '',
       styleExplanation: styleConfig?.userExplanation ?? '',
       imageUrl,
     };
+  },
+});
+
+export const publishPoem = mutation({
+  args: { poemId: v.id('poems') },
+  handler: async (ctx, args) => {
+    const poem = await ctx.db.get(args.poemId);
+    if (!poem) return { success: false as const, error: 'Poem not found.' };
+    if (poem.status !== 'complete') {
+      return { success: false as const, error: 'Only completed poems can be published.' };
+    }
+    if (poem.isPublic === true) {
+      return { success: false as const, error: 'Poem is already published.' };
+    }
+    await ctx.db.patch(args.poemId, { isPublic: true });
+    return { success: true as const };
   },
 });
 

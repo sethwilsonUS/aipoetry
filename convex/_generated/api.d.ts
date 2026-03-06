@@ -12,8 +12,10 @@ import type * as generate from "../generate.js";
 import type * as generateImage from "../generateImage.js";
 import type * as imageStyles from "../imageStyles.js";
 import type * as initPoem from "../initPoem.js";
+import type * as migrations from "../migrations.js";
 import type * as poems from "../poems.js";
 import type * as rateLimiter from "../rateLimiter.js";
+import type * as requestImage from "../requestImage.js";
 import type * as stylesConfig from "../stylesConfig.js";
 import type * as topics from "../topics.js";
 
@@ -28,8 +30,10 @@ declare const fullApi: ApiFromModules<{
   generateImage: typeof generateImage;
   imageStyles: typeof imageStyles;
   initPoem: typeof initPoem;
+  migrations: typeof migrations;
   poems: typeof poems;
   rateLimiter: typeof rateLimiter;
+  requestImage: typeof requestImage;
   stylesConfig: typeof stylesConfig;
   topics: typeof topics;
 }>;
