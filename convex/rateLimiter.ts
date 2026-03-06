@@ -2,34 +2,46 @@ import { mutation } from './_generated/server';
 import { v } from 'convex/values';
 
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
-// Override via RATE_LIMIT_MAX env var in the Convex dashboard.
-// Set a high value (e.g. 1000) in dev, leave unset in prod to keep the default of 5.
-const MAX_REQUESTS_PER_WINDOW = process.env.RATE_LIMIT_MAX
-  ? parseInt(process.env.RATE_LIMIT_MAX, 10)
+
+const POEM_LIMIT = process.env.RATE_LIMIT_MAX_POEMS
+  ? parseInt(process.env.RATE_LIMIT_MAX_POEMS, 10)
+  : 20;
+
+const IMAGE_LIMIT = process.env.RATE_LIMIT_MAX_IMAGES
+  ? parseInt(process.env.RATE_LIMIT_MAX_IMAGES, 10)
   : 5;
 
+function getLimitForKind(kind: string): number {
+  return kind === 'image' ? IMAGE_LIMIT : POEM_LIMIT;
+}
+
 export const checkRateLimit = mutation({
-  args: { identifier: v.string() },
+  args: {
+    identifier: v.string(),
+    kind: v.union(v.literal('poem'), v.literal('image')),
+  },
   handler: async (ctx, args) => {
+    const compositeId = `${args.kind}:${args.identifier}`;
+    const limit = getLimitForKind(args.kind);
     const now = Date.now();
     const windowStart = now - RATE_LIMIT_WINDOW_MS;
 
     const rateLimitDoc = await ctx.db
       .query('rateLimits')
-      .withIndex('by_identifier', (q) => q.eq('identifier', args.identifier))
+      .withIndex('by_identifier', (q) => q.eq('identifier', compositeId))
       .unique();
 
     if (!rateLimitDoc) {
       await ctx.db.insert('rateLimits', {
-        identifier: args.identifier,
+        identifier: compositeId,
         requests: [now],
       });
-      return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - 1 };
+      return { allowed: true, remaining: limit - 1 };
     }
 
     const recentRequests = rateLimitDoc.requests.filter((t) => t > windowStart);
 
-    if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    if (recentRequests.length >= limit) {
       return { allowed: false, remaining: 0 };
     }
 
@@ -37,6 +49,6 @@ export const checkRateLimit = mutation({
       requests: [...recentRequests, now],
     });
 
-    return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - recentRequests.length - 1 };
+    return { allowed: true, remaining: limit - recentRequests.length - 1 };
   },
 });

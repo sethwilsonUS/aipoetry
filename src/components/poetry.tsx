@@ -1,15 +1,13 @@
 import { IPoetry } from '@/types/poetry';
 
-export default function Poetry({ title, lines, styleName, styleExplanation }: IPoetry) {
+export default function Poetry({ title, lines, styleName, styleExplanation, children }: IPoetry) {
   return (
     <article
       className='max-w-2xl mx-auto px-6 py-12 sm:py-16'
       aria-labelledby='poem-title'
     >
-      {/* Announces completion to screen readers when transitioning from the generating state */}
       <p role='status' className='sr-only'>Poem complete.</p>
 
-      {/* Title */}
       <header className='mb-10'>
         <h1
           id='poem-title'
@@ -19,7 +17,6 @@ export default function Poetry({ title, lines, styleName, styleExplanation }: IP
           {title}
         </h1>
 
-        {/* Style info as native disclosure */}
         <details className='style-info group'>
           <summary
             className='inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150'
@@ -43,7 +40,6 @@ export default function Poetry({ title, lines, styleName, styleExplanation }: IP
 
       <hr className='garden-divider' />
 
-      {/* Poem lines */}
       <div
         className='space-y-1.5'
         aria-label='Poem text'
@@ -59,6 +55,8 @@ export default function Poetry({ title, lines, styleName, styleExplanation }: IP
           </p>
         ))}
       </div>
+
+      {children}
     </article>
   );
 }
