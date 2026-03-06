@@ -25,11 +25,12 @@ function buildImagePrompt({
   const poemText = lines.join('\n');
   return `${artStyleFragment}.
 
-Inspired by this ${poeticStyleName} poem titled "${poemTitle}" about ${topicName}:
+The subject is ${topicName}. Illustrate the following ${poeticStyleName} titled "${poemTitle}":
 
 ${poemText}
 
-Capture the specific imagery, metaphors, and emotional tone of the poem above.
+The subject — ${topicName} — should be visually recognizable in the illustration.
+Beyond that, draw from the specific imagery, metaphors, and emotional tone of the poem.
 Unexpected compositional choices, dramatic use of light, color, and form are encouraged.
 Emotionally resonant, even slightly surreal interpretation permitted.
 Museum-quality composition. No text, no typography, no words anywhere in the image.
