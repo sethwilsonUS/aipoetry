@@ -3,7 +3,7 @@ import { v } from 'convex/values';
 import { api, internal } from './_generated/api';
 import { IMAGE_STYLES } from './imageStyles';
 
-type ImageResult =
+type MutationResult =
   | { success: true }
   | { success: false; error: string };
 
@@ -13,7 +13,7 @@ export const requestImageGeneration = mutation({
     artStyle: v.string(),
     identifier: v.string(),
   },
-  handler: async (ctx, args): Promise<ImageResult> => {
+  handler: async (ctx, args): Promise<MutationResult> => {
     const poem = await ctx.db.get(args.poemId);
     if (!poem) return { success: false, error: 'Poem not found.' };
     if (poem.isPublic === true) {
@@ -55,6 +55,36 @@ export const requestImageGeneration = mutation({
 
     await ctx.scheduler.runAfter(0, internal.generateImage.runImageGeneration, {
       poemId: args.poemId,
+    });
+
+    return { success: true };
+  },
+});
+
+export const removeImage = mutation({
+  args: { poemId: v.id('poems') },
+  handler: async (ctx, args): Promise<MutationResult> => {
+    const poem = await ctx.db.get(args.poemId);
+    if (!poem) return { success: false, error: 'Poem not found.' };
+    if (poem.isPublic === true) {
+      return { success: false, error: 'Published poems cannot be modified.' };
+    }
+    if (poem.imageStatus === 'generating') {
+      return { success: false, error: 'Cannot remove while image is generating.' };
+    }
+    if (!poem.imageStorageId && !poem.artStyle) {
+      return { success: false, error: 'No image to remove.' };
+    }
+
+    if (poem.imageStorageId) {
+      await ctx.storage.delete(poem.imageStorageId);
+    }
+
+    await ctx.db.patch(args.poemId, {
+      artStyle: undefined,
+      imageStorageId: undefined,
+      imageDescription: undefined,
+      imageStatus: undefined,
     });
 
     return { success: true };
