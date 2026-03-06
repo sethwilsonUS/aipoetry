@@ -251,24 +251,61 @@ function PoemActions({
     }
   };
 
+  const handleReroll = async () => {
+    setError('');
+    setIsSubmitting(true);
+    try {
+      const result = await regeneratePoem({
+        poemId: poemId as Id<'poems'>,
+        identifier,
+      });
+      if (!result.success) {
+        setError(result.error || 'Failed to re-roll poem.');
+      }
+    } catch {
+      setError('An unexpected error occurred.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className='mt-8 pt-6' style={{ borderTop: '1px dashed var(--border-color)' }}>
       {!isOpen ? (
-        <button
-          type='button'
-          onClick={() => setIsOpen(true)}
-          disabled={isDisabled}
-          className='inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150'
-          aria-label='Regenerate this poem with new options'
-        >
-          <RefreshIcon className='w-3.5 h-3.5' />
-          <span
-            className='italic'
-            style={{ fontFamily: 'var(--font-display), serif' }}
+        <div className='flex flex-wrap items-center gap-x-4 gap-y-2'>
+          <button
+            type='button'
+            onClick={handleReroll}
+            disabled={isDisabled}
+            className='inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150'
+            aria-label='Re-roll this poem with the same topic and style'
+            aria-busy={isSubmitting}
           >
-            Not quite right? Regenerate
-          </span>
-        </button>
+            <DiceIcon className='w-3.5 h-3.5' />
+            <span
+              className='italic'
+              style={{ fontFamily: 'var(--font-display), serif' }}
+            >
+              {isSubmitting ? 'Re-rolling…' : 'Re-roll'}
+            </span>
+          </button>
+          <span className='text-[var(--border-color)]' aria-hidden='true'>|</span>
+          <button
+            type='button'
+            onClick={() => setIsOpen(true)}
+            disabled={isDisabled}
+            className='inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150'
+            aria-label='Regenerate this poem with new options'
+          >
+            <RefreshIcon className='w-3.5 h-3.5' />
+            <span
+              className='italic'
+              style={{ fontFamily: 'var(--font-display), serif' }}
+            >
+              Regenerate with changes
+            </span>
+          </button>
+        </div>
       ) : (
         <form
           onSubmit={(e) => { e.preventDefault(); handleRegenerate(); }}
@@ -339,6 +376,12 @@ function PoemActions({
           </button>
         </form>
       )}
+
+      {!isOpen && error && (
+        <div role='alert' aria-live='assertive' className='alert-error mt-3'>
+          <span className='text-sm'>{error}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -355,13 +398,17 @@ function ImageActions({
   imageStatus?: string;
 }) {
   const requestImage = useMutation(api.requestImage.requestImageGeneration);
+  const removeImageMutation = useMutation(api.requestImage.removeImage);
   const [selectedStyle, setSelectedStyle] = useState(artStyle || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   const [error, setError] = useState('');
   const artStyleId = useId();
 
   const hasImage = imageStatus === 'complete';
   const hasError = imageStatus === 'error';
+  const busy = isSubmitting || isRemoving;
 
   const handleGenerate = async () => {
     setError('');
@@ -388,8 +435,49 @@ function ImageActions({
     }
   };
 
+  const handleRemoveImage = async () => {
+    setIsRemoving(true);
+    setError('');
+    try {
+      const result = await removeImageMutation({
+        poemId: poemId as Id<'poems'>,
+      });
+      if (!result.success) {
+        setError(result.error || 'Failed to remove image.');
+      }
+      setConfirmRemove(false);
+    } catch {
+      setError('An unexpected error occurred.');
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
+  const [isRerolling, setIsRerolling] = useState(false);
+
+  const handleReroll = async () => {
+    if (!artStyle) return;
+    setError('');
+    setIsRerolling(true);
+    try {
+      const result = await requestImage({
+        poemId: poemId as Id<'poems'>,
+        artStyle,
+        identifier,
+      });
+      if (!result.success) {
+        setError(result.error || 'Failed to re-roll image.');
+      }
+    } catch {
+      setError('An unexpected error occurred.');
+    } finally {
+      setIsRerolling(false);
+    }
+  };
+
   const imageStyles = IMAGE_STYLES.filter((s) => s.name !== 'none');
   const isRegenerate = hasImage || hasError;
+  const anyBusy = busy || isRerolling;
 
   return (
     <div className='max-w-2xl mx-auto px-6 pb-8'>
@@ -408,6 +496,55 @@ function ImageActions({
           </p>
         </div>
 
+        {isRegenerate && artStyle && (
+          <button
+            type='button'
+            onClick={handleReroll}
+            disabled={anyBusy}
+            className='inline-flex items-center gap-2 w-full justify-center px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors duration-200'
+            style={{
+              color: 'var(--text-secondary)',
+              borderColor: 'var(--border-color)',
+              backgroundColor: 'transparent',
+            }}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.disabled) {
+                e.currentTarget.style.borderColor = 'var(--accent-border)';
+                e.currentTarget.style.color = 'var(--accent)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-color)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }}
+            aria-label='Re-roll illustration with the same art style'
+            aria-busy={isRerolling}
+          >
+            {isRerolling ? (
+              <>
+                <SpinnerIcon className='w-4 h-4 animate-spin' />
+                Re-rolling…
+              </>
+            ) : (
+              <>
+                <DiceIcon className='w-4 h-4' />
+                Re-roll same style
+              </>
+            )}
+          </button>
+        )}
+
+        <div
+          className='relative flex items-center gap-3'
+          aria-hidden='true'
+        >
+          <div className='flex-1 h-px' style={{ backgroundColor: 'var(--border-color)' }} />
+          <span className='text-xs text-[var(--text-muted)]' style={{ fontFamily: 'var(--font-display), serif' }}>
+            {isRegenerate ? 'or change style' : 'choose a style'}
+          </span>
+          <div className='flex-1 h-px' style={{ backgroundColor: 'var(--border-color)' }} />
+        </div>
+
         <div className='space-y-2'>
           <label
             htmlFor={artStyleId}
@@ -419,7 +556,7 @@ function ImageActions({
             id={artStyleId}
             value={selectedStyle}
             onChange={(e) => setSelectedStyle(e.target.value)}
-            disabled={isSubmitting}
+            disabled={anyBusy}
             className='input-field select-field'
           >
             <option value='' disabled>
@@ -463,7 +600,7 @@ function ImageActions({
         <button
           type='button'
           onClick={handleGenerate}
-          disabled={isSubmitting || !selectedStyle}
+          disabled={anyBusy || !selectedStyle}
           className='btn-primary'
           aria-busy={isSubmitting}
         >
@@ -479,6 +616,72 @@ function ImageActions({
             </>
           )}
         </button>
+
+        {hasImage && !confirmRemove && (
+          <button
+            type='button'
+            onClick={() => setConfirmRemove(true)}
+            disabled={anyBusy}
+            className='inline-flex items-center justify-center gap-2 w-full px-4 py-2 text-xs font-medium rounded-lg transition-colors duration-200'
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--error, #b91c1c)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+          >
+            <TrashIcon className='w-3.5 h-3.5' />
+            Remove illustration
+          </button>
+        )}
+
+        {hasImage && confirmRemove && (
+          <div
+            className='rounded-lg p-3 space-y-3'
+            style={{ backgroundColor: 'var(--surface-secondary)', border: '1px solid var(--border-color)' }}
+            role='alertdialog'
+            aria-label='Confirm illustration removal'
+          >
+            <p className='text-xs text-[var(--text-secondary)] leading-relaxed'>
+              Remove this illustration? The poem will be kept. You can always generate a new illustration later.
+            </p>
+            <div className='flex gap-2'>
+              <button
+                type='button'
+                onClick={handleRemoveImage}
+                disabled={isRemoving}
+                className='inline-flex items-center justify-center gap-1.5 flex-1 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200'
+                style={{
+                  backgroundColor: 'var(--error, #b91c1c)',
+                  color: '#fff',
+                  opacity: isRemoving ? 0.6 : 1,
+                }}
+                aria-busy={isRemoving}
+              >
+                {isRemoving ? (
+                  <>
+                    <SpinnerIcon className='w-3.5 h-3.5 animate-spin' />
+                    Removing…
+                  </>
+                ) : (
+                  <>
+                    <TrashIcon className='w-3.5 h-3.5' />
+                    Yes, remove
+                  </>
+                )}
+              </button>
+              <button
+                type='button'
+                onClick={() => setConfirmRemove(false)}
+                disabled={isRemoving}
+                className='flex-1 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-200'
+                style={{
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -515,32 +718,57 @@ function PublishAction({
     }
   };
 
+  const isImageGenerating = imageStatus === 'generating';
+
   return (
     <div className='max-w-2xl mx-auto px-6 pb-8'>
       {!confirming ? (
-        <div className='flex justify-center'>
-          <button
-            type='button'
-            onClick={() => setConfirming(true)}
-            disabled={isDisabled}
-            className='inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl border transition-all duration-200'
-            style={{
-              color: 'var(--text-secondary)',
-              borderColor: 'var(--border-color)',
-              backgroundColor: 'transparent',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--accent-border)';
-              e.currentTarget.style.color = 'var(--accent)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-color)';
-              e.currentTarget.style.color = 'var(--text-secondary)';
-            }}
-          >
-            <GlobeIcon className='w-4 h-4' />
-            Publish to Archive
-          </button>
+        <div className='flex flex-col items-center gap-2'>
+          <div className='relative group'>
+            <button
+              type='button'
+              onClick={() => setConfirming(true)}
+              disabled={isDisabled}
+              aria-describedby={isImageGenerating ? 'publish-wait-hint' : undefined}
+              className='inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl border transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+              style={{
+                color: 'var(--text-secondary)',
+                borderColor: 'var(--border-color)',
+                backgroundColor: 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.borderColor = 'var(--accent-border)';
+                  e.currentTarget.style.color = 'var(--accent)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+                e.currentTarget.style.color = 'var(--text-secondary)';
+              }}
+            >
+              <GlobeIcon className='w-4 h-4' />
+              Publish to Archive
+            </button>
+            {isImageGenerating && (
+              <span
+                role='tooltip'
+                className='absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10'
+                style={{
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                Please wait until the illustration finishes generating
+              </span>
+            )}
+          </div>
+          {isImageGenerating && (
+            <p id='publish-wait-hint' className='sr-only' aria-live='polite'>
+              Publishing is disabled while the illustration is being generated.
+            </p>
+          )}
         </div>
       ) : (
         <div
@@ -557,7 +785,7 @@ function PublishAction({
             </h2>
             <p className='text-sm text-[var(--text-secondary)] leading-relaxed'>
               This action <strong className='text-[var(--text-primary)]'>cannot be undone</strong>.
-              Once published, the poem and illustration can no longer be regenerated.
+              Once published, the poem and any illustration can no longer be changed.
               Your poem will be visible to anyone browsing the archive.
             </p>
           </div>
@@ -843,6 +1071,29 @@ function GlobeIcon({ className }: { className?: string }) {
       <circle cx='12' cy='12' r='10' />
       <path d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20' />
       <path d='M2 12h20' />
+    </svg>
+  );
+}
+
+function DiceIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+      <rect width='12' height='12' x='2' y='10' rx='2' ry='2' />
+      <path d='m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6' />
+      <path d='M6 18h.01' />
+      <path d='M10 14h.01' />
+      <path d='M15 6h.01' />
+      <path d='M18.5 9.5h.01' />
+    </svg>
+  );
+}
+
+function TrashIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+      <path d='M3 6h18' />
+      <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' />
+      <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' />
     </svg>
   );
 }

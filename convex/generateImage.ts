@@ -31,6 +31,7 @@ ${poemText}
 
 The subject — ${topicName} — should be visually recognizable in the illustration.
 Beyond that, draw from the specific imagery, metaphors, and emotional tone of the poem.
+Use the art style as a visual language — adopt its techniques, palette, and compositional sensibility — but do NOT recreate or directly reference any famous existing artwork. The illustration should feel original, not derivative of a known piece.
 Unexpected compositional choices, dramatic use of light, color, and form are encouraged.
 Emotionally resonant, even slightly surreal interpretation permitted.
 Museum-quality composition. No text, no typography, no words anywhere in the image.
