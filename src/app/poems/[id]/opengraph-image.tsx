@@ -8,6 +8,8 @@ import { Id } from '../../../../convex/_generated/dataModel';
 export const alt = 'Poem preview';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+export const revalidate = 0;
+export const maxDuration = 60;
 
 // Converts AI Gateway model strings like "anthropic/claude-opus-4-6" into
 // readable display names like "Claude Opus 4.6".
@@ -77,12 +79,35 @@ const PAD = 56;
 export default async function OgImage({ params }: { params: { id: string } }) {
   const { id } = params;
 
-  // Fetch poem data server-side
   let poem: Awaited<ReturnType<typeof fetchQuery<typeof api.poems.getById>>> | null = null;
   try {
     poem = await fetchQuery(api.poems.getById, { id: id as Id<'poems'> });
   } catch {
     // fall through to generic fallback
+  }
+
+  // If the poem text is done but image is still generating, poll briefly so
+  // social-platform crawlers receive the card with the image included.  Once a
+  // crawler caches the OG image it won't re-fetch, so this is our one shot.
+  if (
+    poem?.status === 'complete' &&
+    poem.imageStatus &&
+    poem.imageStatus !== 'complete' &&
+    poem.imageStatus !== 'error'
+  ) {
+    const POLL_TIMEOUT_MS = 45_000;
+    const POLL_INTERVAL_MS = 2_000;
+    const deadline = Date.now() + POLL_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+      try {
+        poem = await fetchQuery(api.poems.getById, { id: id as Id<'poems'> });
+      } catch {
+        break;
+      }
+      if (!poem || poem.imageStatus === 'complete' || poem.imageStatus === 'error') break;
+    }
   }
 
   // ── Generic Infinite Poetry fallback ─────────────────────────────────────

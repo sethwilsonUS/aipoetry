@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
@@ -149,6 +149,7 @@ export default function PoemPage({ params }: { params: { id: string } }) {
         poemTitle={poem.title}
         imageDescription={poem.imageDescription}
       />
+      <ShareLink imageStatus={poem.imageStatus} />
     </>
   );
 }
@@ -296,4 +297,71 @@ function PoemImage({
   }
 
   return null;
+}
+
+function ShareLink({ imageStatus }: { imageStatus?: string }) {
+  const [copied, setCopied] = useState(false);
+  const imageReady =
+    !imageStatus || imageStatus === 'complete' || imageStatus === 'error';
+
+  const copy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const input = document.createElement('input');
+      input.value = window.location.href;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }, []);
+
+  return (
+    <div className='max-w-2xl mx-auto px-6 pb-16'>
+      <div className='flex flex-col items-center gap-2'>
+        <button
+          type='button'
+          onClick={copy}
+          className='inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg border transition-all duration-200'
+          style={{
+            fontFamily: 'var(--font-body), system-ui, sans-serif',
+            color: copied
+              ? 'var(--accent)'
+              : 'var(--text-secondary)',
+            borderColor: copied
+              ? 'var(--accent-border)'
+              : 'var(--border-color)',
+            backgroundColor: copied
+              ? 'var(--accent-bg)'
+              : 'transparent',
+          }}
+          aria-label='Copy link to this poem'
+        >
+          {copied ? (
+            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+              <polyline points='20 6 9 17 4 12' />
+            </svg>
+          ) : (
+            <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+              <path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' />
+              <path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' />
+            </svg>
+          )}
+          {copied ? 'Copied!' : 'Copy link'}
+        </button>
+
+        {!imageReady && !copied && (
+          <p className='text-xs text-[var(--text-muted)] italic animate-pulse'>
+            Illustration still painting — wait for the best link preview
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
