@@ -8,12 +8,17 @@
  * @module
  */
 
+import type * as deepPoemAnalyses from "../deepPoemAnalyses.js";
+import type * as deepPoemAnalysisAction from "../deepPoemAnalysisAction.js";
 import type * as generate from "../generate.js";
 import type * as generateImage from "../generateImage.js";
 import type * as imageStyles from "../imageStyles.js";
 import type * as initPoem from "../initPoem.js";
 import type * as migrations from "../migrations.js";
+import type * as poemAnalyses from "../poemAnalyses.js";
 import type * as poems from "../poems.js";
+import type * as poetryModelConfig from "../poetryModelConfig.js";
+import type * as promptLearning from "../promptLearning.js";
 import type * as rateLimiter from "../rateLimiter.js";
 import type * as requestImage from "../requestImage.js";
 import type * as stylesConfig from "../stylesConfig.js";
@@ -26,12 +31,17 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  deepPoemAnalyses: typeof deepPoemAnalyses;
+  deepPoemAnalysisAction: typeof deepPoemAnalysisAction;
   generate: typeof generate;
   generateImage: typeof generateImage;
   imageStyles: typeof imageStyles;
   initPoem: typeof initPoem;
   migrations: typeof migrations;
+  poemAnalyses: typeof poemAnalyses;
   poems: typeof poems;
+  poetryModelConfig: typeof poetryModelConfig;
+  promptLearning: typeof promptLearning;
   rateLimiter: typeof rateLimiter;
   requestImage: typeof requestImage;
   stylesConfig: typeof stylesConfig;

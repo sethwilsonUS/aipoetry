@@ -11,14 +11,20 @@ const IMAGE_LIMIT = process.env.RATE_LIMIT_MAX_IMAGES
   ? parseInt(process.env.RATE_LIMIT_MAX_IMAGES, 10)
   : 5;
 
+const DEEP_ANALYSIS_LIMIT = process.env.RATE_LIMIT_MAX_DEEP_ANALYSES
+  ? parseInt(process.env.RATE_LIMIT_MAX_DEEP_ANALYSES, 10)
+  : 5;
+
 function getLimitForKind(kind: string): number {
-  return kind === 'image' ? IMAGE_LIMIT : POEM_LIMIT;
+  if (kind === 'image') return IMAGE_LIMIT;
+  if (kind === 'deepAnalysis') return DEEP_ANALYSIS_LIMIT;
+  return POEM_LIMIT;
 }
 
 export const checkRateLimit = mutation({
   args: {
     identifier: v.string(),
-    kind: v.union(v.literal('poem'), v.literal('image')),
+    kind: v.union(v.literal('poem'), v.literal('image'), v.literal('deepAnalysis')),
   },
   handler: async (ctx, args) => {
     const compositeId = `${args.kind}:${args.identifier}`;

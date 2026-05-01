@@ -1,6 +1,8 @@
 import { query, mutation, internalMutation, internalQuery } from './_generated/server';
 import { v } from 'convex/values';
 import { STYLES } from './stylesConfig';
+import { ANALYSIS_VERSION } from '../src/lib/poetry/analyzePoem';
+import { DEEP_ANALYSIS_VERSION } from '../src/lib/poetry/analysisTypes';
 
 export const list = query({
   args: {},
@@ -36,12 +38,47 @@ export const getById = query({
     const imageUrl =
       poem.imageStorageId ? await ctx.storage.getUrl(poem.imageStorageId) : null;
     const topic = await ctx.db.get(poem.topicId);
+    const analysis = await ctx.db
+      .query('poemAnalyses')
+      .withIndex('by_poem_version', (q) =>
+        q.eq('poemId', args.id).eq('analysisVersion', ANALYSIS_VERSION),
+      )
+      .unique();
+    const deepAnalysis = await ctx.db
+      .query('poemDeepAnalyses')
+      .withIndex('by_poem_version', (q) =>
+        q.eq('poemId', args.id).eq('analysisVersion', DEEP_ANALYSIS_VERSION),
+      )
+      .unique();
+
+    let verseAnalysis = null;
+    if (analysis) {
+      try {
+        verseAnalysis = JSON.parse(analysis.reportJson);
+      } catch {
+        verseAnalysis = null;
+      }
+    }
+
+    let deepVerseAnalysis = null;
+    if (deepAnalysis?.reportJson) {
+      try {
+        deepVerseAnalysis = JSON.parse(deepAnalysis.reportJson);
+      } catch {
+        deepVerseAnalysis = null;
+      }
+    }
 
     return {
       ...poem,
       topicName: topic?.name ?? '',
       styleExplanation: styleConfig?.userExplanation ?? '',
       imageUrl,
+      verseAnalysis,
+      deepVerseAnalysis,
+      deepVerseAnalysisStatus: deepAnalysis?.status ?? null,
+      deepVerseAnalysisError: deepAnalysis?.error ?? null,
+      deepVerseAnalysisModel: deepAnalysis?.model ?? null,
     };
   },
 });

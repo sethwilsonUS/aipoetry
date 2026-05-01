@@ -41,6 +41,44 @@ New product/research direction:
 - Optionally revise the poem based on analysis.
 - Aggregate results into a research corpus/dashboard.
 
+## Implementation Status
+
+Current branch: `research`
+
+V1 implemented:
+
+- Rule-based TypeScript analyzer in `src/lib/poetry/`.
+- Form profiles for all current `STYLES` entries, not only the initial five-form minimum.
+- Persisted analysis records in a separate Convex `poemAnalyses` table.
+- Rule-based analysis is automatic for newly completed poems and does not use AI model credits.
+- The poem page still exposes a manual rebuild action for older poems or missed background passes.
+- Deep AI analysis is stored separately in `poemDeepAnalyses` and only runs after an explicit user action.
+- Completed deep AI analyses can be manually summarized into prompt-improvement candidates.
+- Prompt-improvement candidates never affect generation until explicitly approved as active guidance.
+- Existing completed poems can still be backfilled manually for research/admin purposes.
+- Public/private poem pages display a `VerseAnalysisPanel`.
+- Poetry model configuration is centralized in `convex/poetryModelConfig.ts`.
+- Generated poem records store model/provider/gateway/prompt-version metadata.
+- Unit tests cover analyzer utilities, report shape, and representative form profiles.
+
+Important implementation shifts:
+
+- Haiku scoring no longer treats 5-7-5 as a hard English-language requirement. The analyzer records syllable counts and presents 5-7-5 as a Japanese haiku tradition/context note, but it does not add `syllable_count_drift` failure modes for English haiku solely because lines are not 5/7/5.
+- Rule-based analysis failures are isolated from poem generation. If a poem completes but analysis is missing or fails, the poem remains complete and the UI can show a rebuild state.
+- Deep AI analysis uses the configured `DEEP_ANALYSIS_MODEL_CONFIG` model and is gated behind a user-triggered request.
+- Prompt learning is curated release management, not automatic optimization.
+- Human feedback remains deferred until authenticated users and abuse controls exist.
+- The V1 report stores the full report as `reportJson` plus indexed summary fields rather than splitting every check/feature into separate columns.
+- Model comparison, revision, dashboard aggregation, and human feedback remain future work.
+
+Prompt learning controls:
+
+- `promptImprovementCandidates` stores pending/approved/rejected guidance candidates synthesized from completed deep analyses.
+- `activePromptGuidance` stores the currently approved global/style prompt guidance.
+- Candidate creation is manual and internal, with a 14-day cooldown per global/style scope.
+- Active guidance is appended to the handwritten generation prompt and recorded on each poem via guidance ids/version metadata.
+- Public human feedback should not feed the prompt loop until Clerk or equivalent auth is wired.
+
 ## Exhibit / Research Thesis
 
 The key claim is:
@@ -194,14 +232,19 @@ Start with forms likely already supported in the project:
 Checks:
 
 - 3 lines
-- approximate 5/7/5 syllable pattern
+- record approximate syllable counts
+- note whether the poem echoes the traditional Japanese 5/7/5 pattern
+- do **not** treat 5/7/5 as mandatory for English haiku
 - concise image-based language
 
 Failure modes:
 
 - wrong line count
-- syllable_count_drift
 - decorative_form
+
+Implementation note:
+
+- V1 uses `haiku_syllable_tradition` as a context note rather than a failure-producing constraint.
 
 #### Limerick
 
@@ -643,20 +686,19 @@ Or create separate `poemAnalyses` table:
 ```ts
 poemAnalyses: defineTable({
   poemId: v.id('poems'),
-  styleName: v.string(),
   analysisVersion: v.string(),
+  styleName: v.string(),
+  model: v.string(),
   overallScore: v.number(),
   summary: v.string(),
-  checksJson: v.string(),
-  detectedFeaturesJson: v.string(),
   failureModes: v.array(v.string()),
-  revisionAdvice: v.array(v.string()),
   confidence: v.string(),
+  reportJson: v.string(),
   createdAt: v.number(),
 })
 ```
 
-Recommendation: if Convex schema complexity is manageable, use a separate table for analyses so old poems can be re-analyzed with newer analyzer versions.
+Implemented V1 choice: use the separate `poemAnalyses` table so old poems can be re-analyzed with newer analyzer versions. The full `VerseAnalysisReport` is stored as `reportJson`; top-level score, summary, confidence, failure modes, style, model, version, and creation time are duplicated as queryable metadata.
 
 ## Research Dashboard
 
@@ -759,28 +801,30 @@ src/lib/poetry/
   syllables.ts
   rhyme.ts
   lineFeatures.ts
-  failureModes.ts
   __tests__/
-    syllables.test.ts
-    rhyme.test.ts
-    analyzePoem.test.ts
+    analysis.test.ts
 ```
+
+Implemented V1 structure follows this layout except failure-mode mapping currently lives inside `formProfiles.ts`.
 
 UI components:
 
 ```text
 src/components/poetry/
   VerseAnalysisPanel.tsx
-  VerseAnalysisCheckList.tsx
-  RevisionComparison.tsx
 ```
+
+Implemented V1 includes `VerseAnalysisPanel.tsx`. `RevisionComparison.tsx` remains future work for the full loop.
 
 Convex:
 
 ```text
-convex/analyzePoem.ts
+convex/poemAnalyses.ts
+convex/poetryModelConfig.ts
 convex/revisePoem.ts
 ```
+
+Implemented V1 includes `poemAnalyses.ts` and `poetryModelConfig.ts`. `revisePoem.ts` remains future work.
 
 Exact paths may need adjustment based on current app structure.
 
@@ -813,60 +857,62 @@ Test examples should include:
 
 ### Phase 1: Analyzer Core
 
-- Add analysis types.
-- Add generic line/word/syllable/rhyme utilities.
-- Add form profiles for haiku, limerick, sonnet, villanelle, sestina.
-- Add tests.
+- [x] Add analysis types.
+- [x] Add generic line/word/syllable/rhyme utilities.
+- [x] Add form profiles for every current style: haiku, limerick, English sonnet, Italian sonnet, blank verse, iambic pentameter couplets, terza rima, villanelle, sestina, and alliterative verse.
+- [x] Add tests.
 
 Deliverable:
 
-- `analyzePoem(input)` returns useful structured report.
+- [x] `analyzePoem(input)` returns useful structured report.
 
 ### Phase 2: UI Integration
 
-- Run analyzer on generated poem.
-- Display analysis panel.
-- Keep language accessible.
-- Add visual score treatment but avoid overclaiming precision.
+- [x] Automatically show/rebuild the rule-based analyzer from a completed poem page.
+- [x] Display analysis panel.
+- [x] Keep language accessible.
+- [x] Add visual score treatment but avoid overclaiming precision.
+- [x] Add an explicit deep AI analysis request action.
 
 Deliverable:
 
-- User can see how well each poem followed the form.
+- [x] User can see how well each poem followed the form.
 
 ### Phase 3: Persistence
 
-- Store analysis report/version with poem or in separate table.
-- Store model/provider/gateway metadata for every poem.
-- Add migration/backfill path if needed.
+- [x] Store analysis report/version in separate table.
+- [x] Store model/provider/gateway metadata for every poem.
+- [x] Add automatic rule-analysis creation plus migration/backfill path.
+- [x] Store deep AI analysis separately with model/version/status metadata.
 
 Deliverable:
 
-- Generated poems accumulate research metadata.
+- [x] Generated poems accumulate research metadata.
 
 ### Phase 4: Revision Loop
 
-- Add “Revise for form” action.
-- Feed analysis report back into model.
-- Store revised poem linked to original.
-- Re-analyze revised poem.
-- Show before/after comparison.
+- [ ] Add “Revise for form” action.
+- [ ] Feed analysis report back into model.
+- [ ] Store revised poem linked to original.
+- [ ] Re-analyze revised poem.
+- [ ] Show before/after comparison.
 
 Deliverable:
 
-- User can observe whether critique improves or damages the poem.
+- [ ] User can observe whether critique improves or damages the poem.
 
 ### Phase 5: Research Dashboard and Model Comparison
 
-- Aggregate scores and failure modes by form.
-- Aggregate scores and failure modes by model.
-- Show hardest/easiest forms.
-- Show which models perform best/worst on each form and constraint.
-- Show revision improvement/regression by model.
+- [ ] Aggregate scores and failure modes by form.
+- [ ] Aggregate scores and failure modes by model.
+- [ ] Show hardest/easiest forms.
+- [ ] Show which models perform best/worst on each form and constraint.
+- [ ] Show revision improvement/regression by model.
 
 Deliverable:
 
-- Exhibit has visible research findings, not just individual artifacts.
-- Visitors can compare how different gateway-backed models perform under identical poetic constraints.
+- [ ] Exhibit has visible research findings, not just individual artifacts.
+- [ ] Visitors can compare how different gateway-backed models perform under identical poetic constraints.
 
 ## Academic / ELO Framing
 
@@ -903,14 +949,19 @@ The goal is a useful, transparent, extensible analyzer — not The One Scansion 
 
 A first successful implementation should satisfy:
 
-- Existing app still generates and displays poems.
-- Each generated poem can produce a structured `VerseAnalysisReport`.
-- At least 5 forms have form-specific analysis.
-- Analysis panel appears in UI.
-- Model metadata is stored for generated poems.
-- At least two Vercel AI Gateway-backed models can be compared with the same prompt/form.
-- Unit tests cover core analyzer utilities.
-- Analyzer output is understandable to non-specialists.
-- Analyzer uncertainty is clearly communicated.
-- Code is structured so additional forms/checks can be added later.
+- [x] Existing app still generates and displays poems.
+- [x] Each generated poem can produce a structured `VerseAnalysisReport`.
+- [x] At least 5 forms have form-specific analysis.
+- [x] Analysis panel appears in UI.
+- [x] Model metadata is stored for generated poems.
+- [ ] At least two Vercel AI Gateway-backed models can be compared with the same prompt/form.
+- [x] Unit tests cover core analyzer utilities.
+- [x] Analyzer output is understandable to non-specialists.
+- [x] Analyzer uncertainty is clearly communicated.
+- [x] Code is structured so additional forms/checks can be added later.
 
+V1 verification performed:
+
+- `npm test`
+- `npx tsc --noEmit`
+- `npm run lint` (passes with unrelated pre-existing warnings)
