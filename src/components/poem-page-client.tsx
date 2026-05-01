@@ -8,6 +8,7 @@ import { STYLES } from '../../convex/stylesConfig';
 import { IMAGE_STYLES } from '../../convex/imageStyles';
 import Poetry from '@/components/poetry';
 import PoemFormFields from '@/components/poem-form-fields';
+import VerseAnalysisPanel from '@/components/poetry/VerseAnalysisPanel';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -157,6 +158,17 @@ export default function PoemPageClient({ poemId, identifier }: PoemPageClientPro
           />
         )}
       </Poetry>
+
+      <VerseAnalysisPanel
+        analysis={poem.verseAnalysis ?? null}
+        deepAnalysis={poem.deepVerseAnalysis ?? null}
+        deepAnalysisStatus={poem.deepVerseAnalysisStatus ?? null}
+        deepAnalysisError={poem.deepVerseAnalysisError ?? null}
+        deepAnalysisModel={poem.deepVerseAnalysisModel ?? null}
+        poemId={poemId}
+        styleName={poem.styleName}
+        identifier={identifier}
+      />
 
       <PoemImage
         imageStatus={poem.imageStatus}

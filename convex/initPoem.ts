@@ -1,31 +1,17 @@
 import { mutation } from './_generated/server';
 import { v } from 'convex/values';
 import { api, internal } from './_generated/api';
+import type { Id } from './_generated/dataModel';
 import { STYLES } from './stylesConfig';
-
-const MODEL = 'anthropic/claude-opus-4-6';
-const TEMPERATURE = 1.0;
+import { POETRY_MODEL_CONFIG } from './poetryModelConfig';
+import {
+  buildPoemPrompt,
+  buildPromptGuidanceVersion,
+} from '../src/lib/poetry/promptLearning';
 
 type MutationResult =
   | { success: true; poemId: string }
   | { success: false; error: string };
-
-function buildPrompt(topic: string, style: (typeof STYLES)[number]): string {
-  return `Write a poem about "${topic}" in ${style.description}.
-
-Guidelines:
-- Approach the topic from an unexpected or surprising angle — not the first thing that comes to mind
-- Use specific, concrete imagery and sensory details
-- Avoid clichés (moonlight, whispers, gentle breezes, aching hearts, etc.)
-- Let the form's constraints serve the meaning — don't just fill in the structure mechanically
-- Give the poem a poetic, evocative title — not just "The ${topic}"
-- No blank lines between stanzas
-
-Return your response as JSON in this exact format:
-{"title": "The Title", "lines": ["line 1", "line 2", ...]}
-
-The lines array should have at most ${style.numberOfLines} lines.`;
-}
 
 export const initAndSchedule = mutation({
   args: {
@@ -61,7 +47,17 @@ export const initAndSchedule = mutation({
       ? existingTopic._id
       : await ctx.db.insert('topics', { name: args.topic });
 
-    const prompt = buildPrompt(args.topic, style);
+    const activePromptGuidance = await ctx.runQuery(
+      internal.promptLearning.getActivePromptGuidanceForStyle,
+      {
+        styleName: args.styleName,
+      },
+    );
+    const prompt = buildPoemPrompt(args.topic, style, activePromptGuidance);
+    const promptVersion = buildPromptGuidanceVersion(
+      POETRY_MODEL_CONFIG.promptVersion,
+      activePromptGuidance,
+    );
 
     const poemId = await ctx.db.insert('poems', {
       title: '',
@@ -69,8 +65,17 @@ export const initAndSchedule = mutation({
       styleName: args.styleName,
       topicId,
       prompt,
-      model: MODEL,
-      temperature: TEMPERATURE,
+      model: POETRY_MODEL_CONFIG.model,
+      modelProvider: POETRY_MODEL_CONFIG.provider,
+      gatewayModelId: POETRY_MODEL_CONFIG.gatewayModelId,
+      generationPromptVersion: promptVersion,
+      systemPromptVersion: POETRY_MODEL_CONFIG.systemPromptVersion,
+      activePromptGuidanceIds: activePromptGuidance.map(
+        (guidance) => guidance.id as Id<'activePromptGuidance'>,
+      ),
+      promptGuidanceVersion: promptVersion,
+      generatedAt: Date.now(),
+      temperature: POETRY_MODEL_CONFIG.temperature,
       status: 'generating',
       isPublic: false,
     });
@@ -140,7 +145,24 @@ export const regeneratePoem = mutation({
       await ctx.storage.delete(poem.imageStorageId);
     }
 
-    const prompt = buildPrompt(newTopic, style);
+    await ctx.runMutation(internal.poemAnalyses.clearForPoem, {
+      poemId: args.poemId,
+    });
+    await ctx.runMutation(internal.deepPoemAnalyses.clearForPoem, {
+      poemId: args.poemId,
+    });
+
+    const activePromptGuidance = await ctx.runQuery(
+      internal.promptLearning.getActivePromptGuidanceForStyle,
+      {
+        styleName: newStyleName,
+      },
+    );
+    const prompt = buildPoemPrompt(newTopic, style, activePromptGuidance);
+    const promptVersion = buildPromptGuidanceVersion(
+      POETRY_MODEL_CONFIG.promptVersion,
+      activePromptGuidance,
+    );
 
     await ctx.db.patch(args.poemId, {
       title: '',
@@ -148,8 +170,17 @@ export const regeneratePoem = mutation({
       styleName: newStyleName,
       topicId: newTopicId,
       prompt,
-      model: MODEL,
-      temperature: TEMPERATURE,
+      model: POETRY_MODEL_CONFIG.model,
+      modelProvider: POETRY_MODEL_CONFIG.provider,
+      gatewayModelId: POETRY_MODEL_CONFIG.gatewayModelId,
+      generationPromptVersion: promptVersion,
+      systemPromptVersion: POETRY_MODEL_CONFIG.systemPromptVersion,
+      activePromptGuidanceIds: activePromptGuidance.map(
+        (guidance) => guidance.id as Id<'activePromptGuidance'>,
+      ),
+      promptGuidanceVersion: promptVersion,
+      generatedAt: Date.now(),
+      temperature: POETRY_MODEL_CONFIG.temperature,
       status: 'generating',
       artStyle: undefined,
       imageStorageId: undefined,

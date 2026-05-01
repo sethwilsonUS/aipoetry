@@ -5,16 +5,7 @@ import { v } from 'convex/values';
 import { internal } from './_generated/api';
 import { streamText } from 'ai';
 import { tryParseJson, tryParsePartialJson } from '../src/lib/poemParsing';
-
-const MODEL = 'anthropic/claude-opus-4-6';
-const TEMPERATURE = 1.0;
-
-const SYSTEM_PROMPT = `You are a skilled and imaginative poet with deep knowledge of poetic traditions across cultures and eras. Your poems are distinctive and specific. You favor:
-- Concrete, sensory imagery over vague abstraction
-- Surprising, unexpected angles over obvious interpretations
-- Genuine emotional resonance over sentimentality
-- Precise language — the exact word, not the approximate one
-Avoid overused poetic clichés: moonlight flooding in, whispers, gentle breezes, hearts aching, souls yearning, and similar stock phrases.`;
+import { POETRY_MODEL_CONFIG, SYSTEM_PROMPT } from './poetryModelConfig';
 
 // Internal action — called by the scheduler from initAndSchedule mutation.
 // Runs in the background while the client is already watching the poem page.
@@ -28,9 +19,9 @@ export const runGeneration = internalAction({
       let fullResponse = '';
 
       const result = streamText({
-        model: MODEL,
-        maxOutputTokens: 800,
-        temperature: TEMPERATURE,
+        model: POETRY_MODEL_CONFIG.model,
+        maxOutputTokens: POETRY_MODEL_CONFIG.maxOutputTokens,
+        temperature: POETRY_MODEL_CONFIG.temperature,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: args.prompt }],
       });
@@ -57,6 +48,13 @@ export const runGeneration = internalAction({
           lines: finalParsed.lines || [],
           status: 'complete',
         });
+        try {
+          await ctx.runMutation(internal.poemAnalyses.analyzeAndStore, {
+            poemId: args.poemId,
+          });
+        } catch {
+          // The deterministic analysis is helpful, but generation should remain complete.
+        }
       } else {
         await ctx.runMutation(internal.poems.setError, { id: args.poemId });
       }
