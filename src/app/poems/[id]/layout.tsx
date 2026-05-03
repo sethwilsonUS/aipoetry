@@ -6,11 +6,12 @@ import { Id } from '../../../../convex/_generated/dataModel';
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
+  const { id } = await params;
   let poem: Awaited<ReturnType<typeof fetchQuery<typeof api.poems.getById>>> | null = null;
   try {
-    poem = await fetchQuery(api.poems.getById, { id: params.id as Id<'poems'> });
+    poem = await fetchQuery(api.poems.getById, { id: id as Id<'poems'> });
   } catch {
     // fall through to generic title
   }

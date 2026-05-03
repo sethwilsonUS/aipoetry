@@ -76,8 +76,8 @@ const ACCENT_DIVIDER = 'rgba(52, 211, 153, 0.20)';
 const IMAGE_PANEL_W = 500;
 const PAD = 56;
 
-export default async function OgImage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function OgImage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   let poem: Awaited<ReturnType<typeof fetchQuery<typeof api.poems.getById>>> | null = null;
   try {
