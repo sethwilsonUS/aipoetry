@@ -2,6 +2,7 @@
   "name": "aipoetry",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "dev": "npm run dev:backend & npm run dev:frontend",
     "dev:frontend": "next dev",
