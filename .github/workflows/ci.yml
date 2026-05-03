@@ -15,17 +15,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version-file: ".nvmrc"
+          cache: yarn
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Cache node_modules
-        uses: actions/cache/save@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+        run: yarn install --frozen-lockfile
 
   lint:
     name: Lint
@@ -36,15 +30,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
+          cache: yarn
 
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-      - run: npm run lint
+      - run: yarn lint
 
   typecheck:
     name: Typecheck
@@ -55,15 +47,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
+          cache: yarn
 
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-      - run: npx tsc --noEmit
+      - run: yarn tsc --noEmit
 
   test:
     name: Test
@@ -74,12 +64,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
+          cache: yarn
 
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-      - run: npm test
+      - run: yarn test
